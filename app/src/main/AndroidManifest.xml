@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.hl.messagerelayer">
+
+    <!-- 允许程序监控短信的接受 -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".activity.MainActivity">
+        </activity>
+
+        <receiver
+            android:name=".receiver.MessageReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.SmsService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+
+        <activity
+            android:name=".activity.SmsRelayerActivity"
+            android:label="配置短信">
+        </activity>
+        <activity
+            android:name=".activity.EmailRelayerActivity"
+            android:label="配置邮件">
+        </activity>
+        <activity
+            android:name=".activity.RuleActivity"
+            android:label="配置转发规则">
+        </activity>
+        <activity
+            android:name=".activity.ContactListActivity"
+            android:label="选择联系人">
+        </activity>
+        <activity
+            android:name=".activity.SelectedContactActivity"
+            android:label="联系人来源"
+            android:launchMode="singleTask">
+        </activity>
+        <activity
+            android:name=".activity.KeywordActivity"
+            android:label="关键字来源">
+        </activity>
+        <activity
+            android:name=".activity.AboutActivity"
+            android:label="关于">
+        </activity>
+        <activity
+            android:name=".activity.WeChatConfigurationAct"
+           >
+        </activity>
+        <activity android:name=".activity.StartActivity"
+            android:theme="@style/AppTheme.Start">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name=".activity.AccessibilityOpenHelperActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:process=":BackgroundService"
+            android:taskAffinity="com.open.helper"
+            android:theme="@style/Accessibility.Transparent.Activity" />
+
+        <service android:name=".service.AccessibilitySampleService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:process=":BackgroundService">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_config"/>
+        </service>
+    </application>
+
+</manifest>

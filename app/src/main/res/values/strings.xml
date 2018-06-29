@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">短信多重转发助手</string>
+    <string name="str">微信给指定人发消息</string>
+    <string name="message_permission_rationale">允许以下权限以便程序继续执行：\n\n%1$s</string>
+    <string name="title_dialog">友情提示</string>
+    <string name="resume">继续</string>
+    <string name="action_settings">设置</string>
+    <string name="setting">设置</string>
+    <string name="cancel">取消</string>
+    <string name="no">NO</string>
+    <string name="message_permission_always_failed">我们需要以下权限，请在设置中为我们开启：\n\n%1$s</string>
+</resources>
