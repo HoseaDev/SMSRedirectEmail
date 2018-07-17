@@ -16,15 +16,17 @@ import android.widget.TextView;
 import com.hl.messagerelayer.R;
 import com.hl.messagerelayer.confing.Constant;
 import com.hl.messagerelayer.utils.NativeDataManager;
+import com.hl.messagerelayer.utils.db.DataBaseManager;
 
 public class RuleActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private RelativeLayout mMoblieRuleLayout, mKeywordRuleLayout, mPrefixRuleLayout, mSuffixRuleLayout;
+    private RelativeLayout mMoblieRuleLayout, mKeywordRuleLayout, mPrefixRuleLayout, mSuffixRuleLayout, mSmsListRuleLayout, mBlackRule;
     private NativeDataManager mNativeDataManager;
     private TextView mPrefixText, mSuffixText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rule);
 
@@ -46,6 +48,8 @@ public class RuleActivity extends AppCompatActivity implements View.OnClickListe
 
         mPrefixRuleLayout = (RelativeLayout) findViewById(R.id.layout_rule_prefix);
         mSuffixRuleLayout = (RelativeLayout) findViewById(R.id.layout_rule_suffix);
+        mSmsListRuleLayout = (RelativeLayout) findViewById(R.id.layout_rule_sms_list);
+        mBlackRule = (RelativeLayout) findViewById(R.id.layout_rule_black);
 
         mPrefixText = (TextView) findViewById(R.id.text_prefix);
         mSuffixText = (TextView) findViewById(R.id.text_suffix);
@@ -57,6 +61,8 @@ public class RuleActivity extends AppCompatActivity implements View.OnClickListe
 
         mPrefixRuleLayout.setOnClickListener(this);
         mSuffixRuleLayout.setOnClickListener(this);
+        mBlackRule.setOnClickListener(this);
+        mSmsListRuleLayout.setOnClickListener(this);
     }
 
     private void initData() {
@@ -83,6 +89,7 @@ public class RuleActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.layout_rule_mobile:
                 startActivity(new Intent(this, SelectedContactActivity.class));
+
                 break;
             case R.id.layout_rule_keyword:
                 startActivity(new Intent(this, KeywordActivity.class));
@@ -92,6 +99,13 @@ public class RuleActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.layout_rule_suffix:
                 showEditDialog("请输入要附加的内容后缀", Constant.KEY_CONTENT_SUFFIX);
+                break;
+            case R.id.layout_rule_sms_list:
+                startActivity(new Intent(this, SmsActivity.class));
+
+                break;
+            case R.id.layout_rule_black:
+                startActivity(new Intent(this, SmsBlackActivity.class));
                 break;
         }
     }

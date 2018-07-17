@@ -13,12 +13,14 @@ import android.widget.Toast;
 import com.hl.messagerelayer.activity.ContactListActivity;
 import com.hl.messagerelayer.adapter.ContactListAdapter;
 import com.hl.messagerelayer.bean.Contact;
+import com.hl.messagerelayer.bean.SmsBean;
 import com.hl.messagerelayer.confing.Constant;
 import com.hl.messagerelayer.service.SmsService;
 import com.hl.messagerelayer.utils.ContactManager;
 import com.hl.messagerelayer.utils.FormatMobile;
 import com.hl.messagerelayer.utils.LogUtil;
 import com.hl.messagerelayer.utils.NativeDataManager;
+import com.hl.messagerelayer.utils.db.DataBaseManager;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,8 @@ public class MessageReceiver extends BroadcastReceiver {
         Toast.makeText(context, "收到消息", Toast.LENGTH_SHORT).show();
         Log.i("MessageReceiver", "收到消息: ");
         this.mNativeDataManager = new NativeDataManager(context);
+        DataBaseManager dataBaseManager = new DataBaseManager(context);
+        ArrayList<SmsBean> smsIntercept = dataBaseManager.getSmsIntercept();
         if (mNativeDataManager.getReceiver()) {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
@@ -47,6 +51,15 @@ public class MessageReceiver extends BroadcastReceiver {
                     sms = SmsMessage.createFromPdu((byte[]) pdus[i]);
                     content += sms.getMessageBody();
                     mobile = sms.getOriginatingAddress();
+                }
+                Log.i("MessageReceiver", "mobile: " + mobile);
+                for (int i = 0; i < smsIntercept.size(); i++) {
+                    Log.i("MessageReceiver", "smsIntercept.get(" + i + ").getPhone()" + smsIntercept.get(i).getPhone());
+                    if (smsIntercept.get(i).getPhone().equals(mobile)) {
+                        //黑名单短信
+                        Log.i("MessageReceiver", "intercept---->" + mobile);
+                        return;
+                    }
                 }
                 if (FormatMobile.hasPrefix(mobile)) {
                     mobile = FormatMobile.formatMobile(mobile);

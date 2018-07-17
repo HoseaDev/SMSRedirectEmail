@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.hl.messagerelayer.bean.Contact;
+import com.hl.messagerelayer.bean.SmsBean;
 import com.hl.messagerelayer.confing.Constant;
+import com.hl.messagerelayer.confing.SMSConfig;
 import com.hl.messagerelayer.utils.FormatMobile;
 
 import java.util.ArrayList;
@@ -40,15 +42,29 @@ public class DataBaseManager {
         database.insert(Constant.DB_TABLE_NAME, null, values);
     }
 
+
+    /**
+     * 添加一条数据
+     *
+     * @param contact
+     */
+    public void addSMSIntercept(SmsBean smsBean) {
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(SMSConfig.DB_KEY_NAME, smsBean.getName());
+        values.put(SMSConfig.DB_KEY_MOBLIE, smsBean.getPhone());
+        database.insert(SMSConfig.DB_TABLE_NAME, null, values);
+    }
+
+
     /**
      * 添加多条数据
-     *
      */
     public void addContactList(List<Contact> contactList) {
         SQLiteDatabase database = mHelper.getWritableDatabase();
         for (Contact contact : contactList) {
             String num = contact.getContactNum();
-            if (FormatMobile.hasPrefix(num)){
+            if (FormatMobile.hasPrefix(num)) {
                 num = FormatMobile.formatMobile(num);
             }
             ContentValues values = new ContentValues();
@@ -75,6 +91,24 @@ public class DataBaseManager {
         return contactList;
     }
 
+
+    /**
+     * 获取所有联系人
+     */
+    public ArrayList<SmsBean> getSmsIntercept() {
+        ArrayList<SmsBean> smsBeanArrayList = new ArrayList<>();
+        SQLiteDatabase database = mHelper.getReadableDatabase();
+        Cursor cursor = database.query(SMSConfig.DB_TABLE_NAME
+                , null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            SmsBean smsBean = new SmsBean();
+            smsBean.setName(cursor.getString(cursor.getColumnIndex(Constant.DB_KEY_NAME)));
+            smsBean.setPhone(cursor.getString(cursor.getColumnIndex(Constant.DB_KEY_MOBLIE)));
+            smsBeanArrayList.add(smsBean);
+        }
+        return smsBeanArrayList;
+    }
+
     /**
      * 删除某一联系人，根据其手机号
      *
@@ -82,8 +116,19 @@ public class DataBaseManager {
      */
     public void deleteContactFromMobile(String mobile) {
         SQLiteDatabase database = mHelper.getWritableDatabase();
-        database.delete(Constant.DB_TABLE_NAME, Constant.DB_KEY_MOBLIE + "= ?" , new String[]{mobile});
+        database.delete(Constant.DB_TABLE_NAME, Constant.DB_KEY_MOBLIE + "= ?", new String[]{mobile});
     }
+
+    /**
+     * 删除拦截，根据其手机号
+     *
+     * @param mobile
+     */
+    public void deleteSmsFromMobile(String mobile) {
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+        database.delete(SMSConfig.DB_TABLE_NAME, SMSConfig.DB_KEY_MOBLIE + "= ?", new String[]{mobile});
+    }
+
 
     /**
      * 删除所有联系人

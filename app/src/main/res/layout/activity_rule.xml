@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_rule"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.hl.messagerelayer.activity.RuleActivity">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,53 +14,107 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
         android:text="转发来源"
-        android:textSize="10sp"/>
+        android:textSize="10sp" />
+
     <RelativeLayout
         android:id="@+id/layout_rule_mobile"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:padding="15dp"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:padding="15dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="按指定手机号转发"
-            android:textSize="17sp"
-            android:textColor="@color/colorDarkText"/>
+            android:textColor="@color/colorDarkText"
+            android:textSize="17sp" />
+
         <ImageView
             android:id="@+id/image_skip_mobile"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:src="@mipmap/ic_skip"/>
+            android:src="@mipmap/ic_skip" />
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:background="@color/colorLine"/>
+        android:background="@color/colorLine" />
+
     <RelativeLayout
         android:id="@+id/layout_rule_keyword"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:padding="15dp"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:padding="15dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="按指定关键字转发"
-            android:textSize="17sp"
-            android:textColor="@color/colorDarkText"/>
+            android:textColor="@color/colorDarkText"
+            android:textSize="17sp" />
+
         <ImageView
             android:id="@+id/image_skip_keyword"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:src="@mipmap/ic_skip"/>
+            android:src="@mipmap/ic_skip" />
     </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/layout_rule_black"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/white"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="黑名单拦截"
+            android:textColor="@color/colorDarkText"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/ic_skip" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/layout_rule_sms_list"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/white"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="短信列表"
+            android:textColor="@color/colorDarkText"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/ic_skip" />
+    </RelativeLayout>
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -69,22 +123,24 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
         android:text="内容定制"
-        android:textSize="10sp"/>
+        android:textSize="10sp" />
+
     <RelativeLayout
         android:id="@+id/layout_rule_prefix"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:padding="15dp"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:padding="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
             android:text="内容前缀"
-            android:textSize="17sp"
             android:textColor="@color/colorDarkText"
-            android:layout_alignParentLeft="true"/>
+            android:textSize="17sp" />
+
         <TextView
             android:id="@+id/text_prefix"
             android:layout_width="wrap_content"
@@ -93,27 +149,31 @@
             android:gravity="center_vertical"
             android:text="点击设置"
             android:textColor="@color/colorLightText"
-            android:textSize="13sp"/>
+            android:textSize="13sp" />
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:background="@color/colorLine"/>
+        android:background="@color/colorLine" />
+
     <RelativeLayout
         android:id="@+id/layout_rule_suffix"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:padding="15dp"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:padding="15dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:text="内容后缀"
-            android:textSize="17sp"
-            android:textColor="@color/colorDarkText"/>
+            android:textColor="@color/colorDarkText"
+            android:textSize="17sp" />
+
         <TextView
             android:id="@+id/text_suffix"
             android:layout_width="wrap_content"
@@ -122,6 +182,6 @@
             android:gravity="center_vertical"
             android:text="点击设置"
             android:textColor="@color/colorLightText"
-            android:textSize="13sp"/>
+            android:textSize="13sp" />
     </RelativeLayout>
 </LinearLayout>

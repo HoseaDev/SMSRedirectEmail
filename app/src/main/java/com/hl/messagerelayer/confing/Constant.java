@@ -56,6 +56,11 @@ public class Constant {
     public static final String DB_KEY_MOBLIE = "mobile";
     public static final String DB_KEY_SELECTED = "selected";
 
+    //数据库配置
+    public static final String DB_TABLE_NAME_SMS_INTERCEPT = "sms_intercept";
+    public static final String DB_KEY_CONTENT = "content";
+
+
     //关键字的列表
     public static final String KEY_KEYWORD_LIST = "keyword";
 
