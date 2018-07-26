@@ -4,6 +4,9 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
     defaultConfig {
+        jackOptions {
+            enabled true
+        }
         applicationId "com.hl.messagerelayer"
         minSdkVersion 15
         targetSdkVersion 25
@@ -16,6 +19,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -32,4 +39,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.2.0'
     compile 'com.google.android:flexbox:0.1.2'
     compile 'com.yanzhenjie:permission:2.0.0-rc4'
+    compile 'com.xdandroid:hellodaemon:+'
 }

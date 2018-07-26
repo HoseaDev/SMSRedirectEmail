@@ -14,7 +14,10 @@ import android.widget.Toast;
 
 import com.hl.messagerelayer.R;
 import com.hl.messagerelayer.listener.ICustomCompletedListener;
+import com.hl.messagerelayer.service.TraceServiceImpl;
 import com.hl.messagerelayer.utils.NativeDataManager;
+import com.xdandroid.hellodaemon.DaemonEnv;
+import com.xdandroid.hellodaemon.IntentWrapper;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
 import com.yanzhenjie.permission.Rationale;
@@ -31,12 +34,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         mNativeDataManager = new NativeDataManager(this);
         initView();
         requestPermission(new ICustomCompletedListener() {
             @Override
             public void success() {
 
+                TraceServiceImpl.sShouldStopService = false;
+                DaemonEnv.startServiceMayBind(TraceServiceImpl.class);
             }
 
             @Override
@@ -44,7 +50,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 Toast.makeText(MainActivity.this, "不给权限没法完...再见!", Toast.LENGTH_LONG).show();
                 finish();
             }
-        },  Permission.READ_SMS, Permission.RECEIVE_SMS, Permission.READ_CONTACTS);
+        }, Permission.READ_SMS, Permission.RECEIVE_SMS, Permission.READ_CONTACTS);
     }
 
     @Override
@@ -68,6 +74,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 } else {
                     mNativeDataManager.setReceiver(true);
                     menuItem.setIcon(R.mipmap.ic_send_on);
+                    IntentWrapper.whiteListMatters(MainActivity.this, "轨迹跟踪服务的持续运行");
                     Toast.makeText(MainActivity.this, "总闸已开启", Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -78,7 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-//                        startActivity(new Intent(MainActivity.this,AboutActivity.class));
+                        startActivity(new Intent(MainActivity.this, AboutActivity.class));
                         return false;
                     }
                 }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);

@@ -219,6 +219,7 @@ public class EmailRelayerManager {
         message.setReceiverAccount(dataManager.getEmailToAccount());
         Log.i("EmailRelayerManager", "real_length()" + getRealLength(content) + "");
         Log.i("EmailRelayerManager", "content.length():" + content.length() + "");
+        //小于中文加英文大于240个字符就显示原主题.
         if (getRealLength(content) < 240) {
             String[] split = content.split("<br>");
             message.setSubject(split[1].trim());
