@@ -222,7 +222,12 @@ public class EmailRelayerManager {
         //小于中文加英文大于240个字符就显示原主题.
         if (getRealLength(content) < 240) {
             String[] split = content.split("<br>");
-            message.setSubject(split[1].trim());
+            if (split.length > 2) {
+                message.setSubject(split[1].trim());
+            } else {
+                //发送测试配置.
+                message.setSubject(content);
+            }
         } else {
             message.setSubject(dataManager.getEmailSubject());
         }
