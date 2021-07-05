@@ -1,19 +1,20 @@
 apply plugin: 'com.android.application'
 
+
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
     defaultConfig {
-        jackOptions {
-            enabled true
-        }
-        applicationId "com.hl.messagerelayer"
-        minSdkVersion 15
-        targetSdkVersion 25
+        applicationId "com.hosea.messagerelayer"
+        minSdkVersion 21
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
+
+
     buildTypes {
         release {
             minifyEnabled false
@@ -27,17 +28,17 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    testCompile 'junit:junit:4.12'
-    compile 'com.sun.mail:android-mail:1.5.5'
-    compile 'com.sun.mail:android-activation:1.5.5'
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
-    compile 'com.android.support:recyclerview-v7:25.2.0'
-    compile 'com.google.android:flexbox:0.1.2'
-    compile 'com.yanzhenjie:permission:2.0.0-rc4'
-    compile 'com.xdandroid:hellodaemon:+'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.sun.mail:android-mail:1.5.5'
+    implementation 'com.sun.mail:android-activation:1.5.5'
+    implementation 'com.squareup.okhttp3:okhttp:3.6.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'com.google.android:flexbox:0.1.2'
+    implementation 'com.yanzhenjie:permission:2.0.0-rc4'
+    implementation 'com.xdandroid:hellodaemon:+'
 }

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:layout_marginTop="100dp"
-    tools:context="com.hl.messagerelayer.activity.AboutActivity">
+    tools:context="com.hosea.messagerelayer.activity.AboutActivity">
 
     <ImageView
         android:layout_width="wrap_content"

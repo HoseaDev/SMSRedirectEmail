@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.hl.messagerelayer.activity.KeywordActivity">
+    tools:context="com.hosea.messagerelayer.activity.KeywordActivity">
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/layout_flexbox"
         android:layout_width="wrap_content"

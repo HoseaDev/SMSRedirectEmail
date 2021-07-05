@@ -5,7 +5,7 @@
     android:id="@+id/activity_email_relayer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hl.messagerelayer.activity.EmailRelayerActivity">
+    tools:context="com.hosea.messagerelayer.activity.EmailRelayerActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
