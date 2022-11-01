@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SMSRedirectEmail.iml" filepath="$PROJECT_DIR$/.idea/modules/SMSRedirectEmail.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/SMSRedirectEmail.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/SMSRedirectEmail.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/SMSRedirectEmail.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/SMSRedirectEmail.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/SMSRedirectEmail.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/SMSRedirectEmail.app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/SMSRedirectEmail.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/SMSRedirectEmail.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MessageRelayer-master.iml" filepath="$PROJECT_DIR$/MessageRelayer-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>
