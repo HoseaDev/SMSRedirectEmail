@@ -86,30 +86,5 @@
             android:textColor="@android:color/white"/>
     </RelativeLayout>
 
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/wechat_relay_layout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="100dp"-->
-<!--        android:layout_marginLeft="10dp"-->
-<!--        android:layout_marginRight="10dp"-->
-<!--        android:background="#15ae11">-->
-<!--        <ImageView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="60dp"-->
-<!--            android:layout_marginLeft="20dp"-->
-<!--            android:layout_centerVertical="true"-->
-<!--            android:src="@drawable/icon_wechat"/>-->
-<!--        <TextView-->
-<!--            android:id="@+id/text_wechat_tip"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_marginRight="30dp"-->
-<!--            android:layout_marginBottom="20dp"-->
-<!--            android:text="转发至微信"-->
-<!--            android:textSize="18sp"-->
-<!--            android:textColor="@android:color/white"/>-->
-<!--    </RelativeLayout>-->
 
 </LinearLayout>

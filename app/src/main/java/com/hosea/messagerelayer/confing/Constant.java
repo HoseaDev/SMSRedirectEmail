@@ -19,6 +19,7 @@ public class Constant {
     //转发渠道配置
     public static final String KEY_RECEIVER = "is_receiver";
     public static final String KEY_RELAY_SMS = "is_sms_relay";
+    public static final String KEY_RELAY_INNER_SMS = "is_sms_inner_relay";
     public static final String KEY_RELAY_EMAIL = "is_email_relay";
 
     public static final String KEY_RELAY_WECHAT = "is_wechat_relay";
@@ -26,6 +27,11 @@ public class Constant {
 
     //手机配置
     public static final String KEY_OBJECT_MOBILE = "mobile";
+
+
+    public static final String KEY_INNER_MOBILE = "inner_mobile";
+
+   public static final String KEY_INNER_MOBILE_RULE = "inner_mobile_rule";
 
 
     //邮箱配置

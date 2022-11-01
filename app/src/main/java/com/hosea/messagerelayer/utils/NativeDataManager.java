@@ -31,9 +31,15 @@ public class NativeDataManager {
     public String getObjectMobile() {
         return mPreference.getString(Constant.KEY_OBJECT_MOBILE, "点击设置");
     }
+   public String getInnerMobile() {
+        return mPreference.getString(Constant.KEY_INNER_MOBILE, "点击设置");
+    }
 
     public void setObjectMobile(String mobile) {
         mPreference.edit().putString(Constant.KEY_OBJECT_MOBILE, mobile).apply();
+    }
+   public void setInnerMobile(String mobile) {
+        mPreference.edit().putString(Constant.KEY_INNER_MOBILE, mobile).apply();
     }
 
     public void setSmsRelay(Boolean b) {
@@ -42,6 +48,21 @@ public class NativeDataManager {
 
     public Boolean getSmsRelay() {
         return mPreference.getBoolean(Constant.KEY_RELAY_SMS, false);
+    }
+
+    public void setInnerRelay(Boolean b) {
+        mPreference.edit().putBoolean(Constant.KEY_RELAY_INNER_SMS, b).apply();
+    }
+
+    public Boolean getInnerRelay() {
+        return mPreference.getBoolean(Constant.KEY_RELAY_INNER_SMS, false);
+    }
+    public void setInnerRule(String b) {
+        mPreference.edit().putString(Constant.KEY_INNER_MOBILE_RULE, b).apply();
+    }
+
+    public String getInnerRule() {
+        return mPreference.getString(Constant.KEY_INNER_MOBILE_RULE, "点击设置");
     }
 
     public void setEmailRelay(Boolean b) {

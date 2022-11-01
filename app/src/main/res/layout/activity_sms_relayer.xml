@@ -7,10 +7,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.hosea.messagerelayer.activity.SmsRelayerActivity">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="转发至短信打开开关后,所有的短信将会被转发至目标手机号."
+        android:textSize="15sp"
+        android:layout_margin="8dp"
+        android:textColor="@color/colorLightText"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="30dp"
+
         android:padding="15dp"
         android:background="@android:color/white">
         <TextView
@@ -57,4 +66,97 @@
             android:textSize="15sp"
             android:textColor="@color/colorLightText"/>
     </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="手机不在身边时让手机发送短信到特定号码:\n 如:A.当前正在使用的手机.B.装软件转发的手机.A发送短信至B.B再装信内容转发出去.现在很多地方验证需要发送短信.部分手机第一次需要验证."
+        android:textSize="15sp"
+        android:layout_margin="8dp"
+        android:textColor="@color/colorLightText"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="15dp"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="转发自己手机的短信"
+            android:textSize="17sp"
+            android:textColor="@color/colorDarkText"/>
+
+        <Switch
+            android:id="@+id/switch_self"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+    <View
+
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/colorLine"/>
+    <RelativeLayout
+        android:id="@+id/layout_self"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="15dp"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="自己使用手机号"
+            android:textSize="17sp"
+            android:textColor="@color/colorDarkText"/>
+        <TextView
+            android:id="@+id/text_self"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:text="点击设置"
+            android:textSize="15sp"
+            android:textColor="@color/colorLightText"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/layout_rule"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="15dp"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="设置自己的分割规则"
+            android:textSize="17sp"
+            android:textColor="@color/colorDarkText"/>
+        <TextView
+            android:id="@+id/text_rule"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:text="点击设置"
+            android:textSize="15sp"
+            android:textColor="@color/colorLightText"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="如果分割规则为@:那么A给B发送的内容为:112233@我爱你\n 这个时候B手机会给手机号为112233发送短信内容为我爱你"
+        android:textSize="15sp"
+        android:layout_margin="8dp"
+        android:textColor="@color/colorLightText"/>
+
 </LinearLayout>

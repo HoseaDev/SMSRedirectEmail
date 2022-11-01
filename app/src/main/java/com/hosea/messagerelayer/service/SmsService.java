@@ -99,20 +99,31 @@ public class SmsService extends IntentService {
                 }
                 LogUtil.e("dContent:" + dContent);
                 if (mNativeDataManager.getSmsRelay()) {
-                    SmsRelayerManager.relaySms(mNativeDataManager, dContent);
+                    SmsRelayerManager.relaySms(SmsService.this,mNativeDataManager.getObjectMobile(), dContent);
                 }
                 if (mNativeDataManager.getEmailRelay()) {
                     dContent = dContent.replace("\n", "<br>");
                     LogUtil.e("email=>" + dContent);
                     EmailRelayerManager.relayEmail(mNativeDataManager, dContent);
                 }
-                if (mNativeDataManager.getWeChatRelay()) {
-                    //这里如果要做好需要自己做一些判断..比如当前显示的是哪个界面.
-                    //微信就不用管.其他界面就给提示.不能处理或者手动跳转处理.
-                    //我这边用的测试机一直在聊天界面这里就先不处理这个东西了.
-                    LogUtil.e("relayMessage: " + dContent);
-                    WeChatRelayerManager.jumpWeChat(getBaseContext(), dContent);
+                LogUtil.e("mobile=>" + mobile);
+                if (mNativeDataManager.getInnerRelay() && mobile.equals(mNativeDataManager.getInnerMobile())) {
+               int sIndex = content.indexOf(mNativeDataManager.getInnerRule());
+               if (sIndex != -1){
+                   String transferPhone  =  content.substring(0,sIndex);
+                   String transferContent  =  content.substring(sIndex+1);
+                   SmsRelayerManager.relaySms(SmsService.this,transferPhone, transferContent);
+                     }
+
                 }
+
+//                if (mNativeDataManager.getWeChatRelay()) {
+//                    //这里如果要做好需要自己做一些判断..比如当前显示的是哪个界面.
+//                    //微信就不用管.其他界面就给提示.不能处理或者手动跳转处理.
+//                    //我这边用的测试机一直在聊天界面这里就先不处理这个东西了.
+//                    LogUtil.e("relayMessage: " + dContent);
+//                    WeChatRelayerManager.jumpWeChat(getBaseContext(), dContent);
+//                }
             }
         }).start();
 
