@@ -1,21 +1,10 @@
-# 短信转发工具
-## 截图展示
-![主界面](https://github.com/HaoFeiWang/MessageRelayer/blob/master/screen/screen_main2.jpg)
-![转发至短信](https://github.com/HaoFeiWang/MessageRelayer/blob/master/screen/screen_email.jpg)
-![转发至邮件](https://github.com/HaoFeiWang/MessageRelayer/blob/master/screen/screen_sms.jpg)
-![规则定制](https://github.com/HaoFeiWang/MessageRelayer/blob/master/screen/screen_rule.jpg)
-
-![选中的联系人](https://github.com/HaoFeiWang/MessageRelayer/blob/master/screen/screen_select.jpg)
-![关键字](https://github.com/HaoFeiWang/MessageRelayer/blob/master/screen/screen_key.jpg)
-![联系人](https://github.com/HaoFeiWang/MessageRelayer/blob/master/screen/screen_list.jpg)
-![关于](https://github.com/HaoFeiWang/MessageRelayer/blob/master/screen/screen_about.jpg)
-
-## 功能概述
 ### 总闸开关
 @HaoFeiWang 基于他的源项目做了一些优化再次感谢这位作者的开源..
-下面的使用方法基本一样.微信那需要进入微信聊天界面才能使用.目前不能熄屏.比较亮屏.
+下面的使用方法基本一样.
 ## 新增内部转发内容到指定号码.
 在短信模块下面.设置内部手机号.设置规则进行发送.
+在软件手机中设置接收转发的内部手机号,
+然后内部手机号发送特定规则的消息给软件手机,软件手机收到消息后再进行转发短信操作.部分手机第一次转发的时候需要手动同意权限
 
 在主页上面，关闭后不进行任何转发
 ### 自动转发短信至目标手机号
