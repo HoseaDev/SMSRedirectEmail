@@ -98,9 +98,9 @@ public class SmsService extends IntentService {
 
                 }
                 LogUtil.e("dContent:" + dContent);
-                if (mNativeDataManager.getSmsRelay()) {
-                    SmsRelayerManager.relaySms(SmsService.this,mNativeDataManager.getObjectMobile(), dContent);
-                }
+//                if (mNativeDataManager.getSmsRelay()) {
+//                    SmsRelayerManager.relaySms(SmsService.this, mNativeDataManager.getObjectMobile(), dContent, mNativeDataManager.getSimIndex());
+//                }
                 if (mNativeDataManager.getEmailRelay()) {
                     dContent = dContent.replace("\n", "<br>");
                     LogUtil.e("email=>" + dContent);
@@ -108,12 +108,12 @@ public class SmsService extends IntentService {
                 }
                 LogUtil.e("mobile=>" + mobile);
                 if (mNativeDataManager.getInnerRelay() && mobile.equals(mNativeDataManager.getInnerMobile())) {
-               int sIndex = content.indexOf(mNativeDataManager.getInnerRule());
-               if (sIndex != -1){
-                   String transferPhone  =  content.substring(0,sIndex);
-                   String transferContent  =  content.substring(sIndex+1);
-                   SmsRelayerManager.relaySms(SmsService.this,transferPhone, transferContent);
-                     }
+                    int sIndex = content.indexOf(mNativeDataManager.getInnerRule());
+                    if (sIndex != -1) {
+                        String transferPhone = content.substring(0, sIndex);
+                        String transferContent = content.substring(sIndex + 1);
+                        SmsRelayerManager.relaySms(SmsService.this, transferPhone, transferContent, mNativeDataManager.getSimIndex());
+                    }
 
                 }
 
