@@ -149,7 +149,7 @@ public class SmsService extends IntentService {
                     } else {
                         title = "尾号:" + receivedMobile.substring(10) + "->" + "验证码:" + extractCode;
                     }
-
+                    LogUtils.i("准备发送邮件:", title, dContent);
                     EmailRelayerManager.relayEmail(mNativeDataManager, title, dContent);
                 }
                 LogUtils.i("mobile=>" + mobile);

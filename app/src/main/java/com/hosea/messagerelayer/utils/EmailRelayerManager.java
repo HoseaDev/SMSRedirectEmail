@@ -67,11 +67,14 @@ public class EmailRelayerManager {
         try {
             MimeMessage message = creatMessage(session, emailMessage);
             Transport.send(message);
+            LogUtils.i("EmailRelayerManager", "发送成功");
             return CODE_SUCCESS;
         } catch (MessagingException e) {
+            LogUtils.e("EmailRelayerManager", "发送失败");
             e.printStackTrace();
             return CODE_FAILE;
         } catch (UnsupportedEncodingException e) {
+            LogUtils.e("EmailRelayerManager", "发送失败");
             e.printStackTrace();
             return CODE_FAILE;
         }
