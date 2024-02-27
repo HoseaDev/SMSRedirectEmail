@@ -202,4 +202,11 @@ public class NativeDataManager {
     }
 
 
+//    /**
+//     * 用户选择的是卡1还是卡2
+//     */
+//    public  int getSimIndex(){
+//        return mPreference.getInt(Constant.SIM_INDEX, 0);
+//    }
+
 }

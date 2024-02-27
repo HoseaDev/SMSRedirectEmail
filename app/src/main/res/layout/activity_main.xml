@@ -42,7 +42,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="20dp"
-            android:text="转发至短信"
+            android:text="转发短信"
             android:textSize="18sp"
             android:textColor="@android:color/white"
             android:id="@+id/textView"/>

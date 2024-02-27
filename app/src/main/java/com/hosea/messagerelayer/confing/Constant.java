@@ -9,6 +9,8 @@ public class Constant {
     //Intent传值的Extra名
     public static final String EXTRA_MESSAGE_CONTENT = "content";
     public static final String EXTRA_MESSAGE_MOBILE = "mobile";
+    //接收的手机号的id
+    public static final String EXTRA_MESSAGE_RECEIVED_MOBILE_SUBID = "received_mobile_sub_id";
     public static final String EXTRA_MESSAGE_CONTACT = "contact";
     public static final String EXTRA_DATA_CHANGE = "updata";
 
@@ -31,7 +33,7 @@ public class Constant {
 
     public static final String KEY_INNER_MOBILE = "inner_mobile";
 
-   public static final String KEY_INNER_MOBILE_RULE = "inner_mobile_rule";
+    public static final String KEY_INNER_MOBILE_RULE = "inner_mobile_rule";
 
 
     //邮箱配置
@@ -72,6 +74,7 @@ public class Constant {
 
     //前缀和后缀
     public static final String KEY_CONTENT_PREFIX = "prefix";
+
     public static final String KEY_CONTENT_SUFFIX = "suffix";
 
 
@@ -81,4 +84,9 @@ public class Constant {
     public static final String WECHAT_STORAGE = "WebChat_Auto";
 
     public static final String SEND_PERMISSION_HINT = "send_permission_hint";
+
+    /**
+     * 选择转发的卡是卡1还是卡2.
+     */
+    public static final String SIM_INDEX = "sim_index";
 }

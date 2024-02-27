@@ -3,11 +3,17 @@
     package="com.hosea.messagerelayer">
 
     <!-- 允许程序监控短信的接受 -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name="com.hosea.messagerelayer.App"
@@ -31,6 +37,9 @@
             android:name="com.hosea.messagerelayer.service.SmsService"
             android:enabled="true"
             android:exported="true"></service>
+
+        <service android:name=".service.ForegroundService" />
+
 
         <activity
             android:name="com.hosea.messagerelayer.activity.SmsRelayerActivity"
@@ -94,7 +103,7 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_config" />
         </service>
-        <service android:name="com.hosea.messagerelayer.service.TraceServiceImpl"/>
+        <service android:name="com.hosea.messagerelayer.service.TraceServiceImpl" />
 
     </application>
 

@@ -26,9 +26,9 @@ import com.yanzhenjie.permission.Permission;
 public class SmsRelayerActivity extends BaseActivity
         implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
-    private Switch mSmsSwitch,mSmsSwitchSelf;
-    private RelativeLayout mMobileRelative, mMobileRelativeSelf,mMobileRelativeRule;
-    private TextView mMobileText, mMobileTextSelf,mMobileTextRule;
+    private Switch mSmsSwitchSelf;
+    private RelativeLayout mMobileRelativeSelf, mMobileRelativeRule;
+    private TextView mMobileTextSelf, mMobileTextRule;
 
     private NativeDataManager mNativeDataManager;
 
@@ -64,9 +64,9 @@ public class SmsRelayerActivity extends BaseActivity
     }
 
     private void initView() {
-        mSmsSwitch = (Switch) findViewById(R.id.switch_sms);
-        mMobileRelative = (RelativeLayout) findViewById(R.id.layout_mobile);
-        mMobileText = (TextView) findViewById(R.id.text_mobile);
+//        mSmsSwitch = (Switch) findViewById(R.id.switch_sms);
+//        mMobileRelative = (RelativeLayout) findViewById(R.id.layout_mobile);
+//        mMobileText = (TextView) findViewById(R.id.text_mobile);
 
 
         mSmsSwitchSelf = (Switch) findViewById(R.id.switch_self);
@@ -78,26 +78,26 @@ public class SmsRelayerActivity extends BaseActivity
     }
 
     private void initData() {
-        if (mNativeDataManager.getSmsRelay()) {
-            mSmsSwitch.setChecked(true);
-        } else {
-            mSmsSwitch.setChecked(false);
-        }
+//        if (mNativeDataManager.getSmsRelay()) {
+//            mSmsSwitch.setChecked(true);
+//        } else {
+//            mSmsSwitch.setChecked(false);
+//        }
 
         if (mNativeDataManager.getInnerRelay()) {
             mSmsSwitchSelf.setChecked(true);
         } else {
             mSmsSwitchSelf.setChecked(false);
         }
-        mMobileText.setText(mNativeDataManager.getObjectMobile());
+//        mMobileText.setText(mNativeDataManager.getObjectMobile());
         mMobileTextSelf.setText(mNativeDataManager.getInnerMobile());
         mMobileTextRule.setText(mNativeDataManager.getInnerRule());
     }
 
     private void initListener() {
-        mSmsSwitch.setOnCheckedChangeListener(this);
+//        mSmsSwitch.setOnCheckedChangeListener(this);
 
-        mMobileRelative.setOnClickListener(this);
+//        mMobileRelative.setOnClickListener(this);
         mSmsSwitchSelf.setOnCheckedChangeListener(this);
 
         mMobileRelativeSelf.setOnClickListener(this);
@@ -108,7 +108,6 @@ public class SmsRelayerActivity extends BaseActivity
     public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.switch_self:
-            case R.id.switch_sms:
                 requestPermission(new ICustomCompletedListener() {
                     @Override
                     public void success() {
@@ -116,9 +115,9 @@ public class SmsRelayerActivity extends BaseActivity
                             Toast.makeText(SmsRelayerActivity.this, "发送短信权限比较特殊.部分手机可能会再下一次开启软件的时候再次请求.如遇这种情况可以在应用程序中手动给允许权限!", Toast.LENGTH_LONG).show();
                             mNativeDataManager.setSendSMSHint(false);
                         }
-                        if (buttonView.getId() == R.id.switch_self){
+                        if (buttonView.getId() == R.id.switch_self) {
                             InnerSmsChecked(isChecked);
-                        }else{
+                        } else {
                             smsChecked(isChecked);
                         }
                     }
@@ -144,6 +143,7 @@ public class SmsRelayerActivity extends BaseActivity
             mNativeDataManager.setSmsRelay(false);
         }
     }
+
     /**
      * 使用短信转发至指定手机号的Switch的事件方法
      *
@@ -161,9 +161,9 @@ public class SmsRelayerActivity extends BaseActivity
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.layout_mobile:
-                showEditDialog(v);
-                break;
+//            case R.id.layout_mobile:
+//                showEditDialog(v);
+//                break;
             case R.id.layout_self:
                 showEditDialog(v);
                 break;
@@ -178,11 +178,10 @@ public class SmsRelayerActivity extends BaseActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_edit, null, false);
         final EditText mobileEdit = (EditText) view.findViewById(R.id.dialog_edit);
-
-        String mobileText = mMobileText.getText().toString();
-        if (!mobileText.equals("点击设置")) {
-            mobileEdit.setText(mobileText);
-        }
+//        String mobileText = mMobileText.getText().toString();
+//        if (!mobileText.equals("点击设置")) {
+//            mobileEdit.setText(mobileText);
+//        }
 
         builder.setView(view);
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -194,13 +193,10 @@ public class SmsRelayerActivity extends BaseActivity
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (v.getId() == R.id.layout_self){
+                if (v.getId() == R.id.layout_self) {
                     mNativeDataManager.setInnerMobile(mobileEdit.getText().toString());
                     mMobileTextSelf.setText(mobileEdit.getText());
-                }else  if (v.getId() == R.id.layout_mobile){
-                    mNativeDataManager.setInnerMobile(mobileEdit.getText().toString());
-                    mMobileTextSelf.setText(mobileEdit.getText());
-                }   else {
+                }else {
                     mNativeDataManager.setInnerRule(mobileEdit.getText().toString());
                     mMobileTextRule.setText(mobileEdit.getText());
                 }

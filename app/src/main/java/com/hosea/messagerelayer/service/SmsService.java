@@ -1,7 +1,15 @@
 package com.hosea.messagerelayer.service;
 
+import android.Manifest;
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
 
 import com.hosea.messagerelayer.bean.Contact;
 import com.hosea.messagerelayer.confing.Constant;
@@ -15,6 +23,8 @@ import com.hosea.messagerelayer.utils.db.DataBaseManager;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SmsService extends IntentService {
 
@@ -29,6 +39,8 @@ public class SmsService extends IntentService {
         super(name);
     }
 
+    private int subId = 0;
+
     @Override
     protected void onHandleIntent(Intent intent) {
         mNativeDataManager = new NativeDataManager(this);
@@ -36,6 +48,7 @@ public class SmsService extends IntentService {
 
         String mobile = intent.getStringExtra(Constant.EXTRA_MESSAGE_MOBILE);
         String content = intent.getStringExtra(Constant.EXTRA_MESSAGE_CONTENT);
+        subId = intent.getIntExtra(Constant.EXTRA_MESSAGE_RECEIVED_MOBILE_SUBID, -1);
         Set<String> keySet = mNativeDataManager.getKeywordSet();
         ArrayList<Contact> contactList = mDataBaseManager.getAllContact();
         //无转发规则
@@ -74,6 +87,30 @@ public class SmsService extends IntentService {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                SubscriptionManager subscriptionManager = SubscriptionManager.from(SmsService.this);
+                if (ActivityCompat.checkSelfPermission(SmsService.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                SubscriptionInfo subscriptionInfo = subscriptionManager.getActiveSubscriptionInfo(subId);
+                String receivedMobile = "";
+                if (subscriptionInfo != null) {
+                    // 获取SIM卡的详细信息
+                    CharSequence carrierName = subscriptionInfo.getCarrierName();
+                    receivedMobile = subscriptionInfo.getNumber();
+                    LogUtil.e(" carrierName " + carrierName + " number " + receivedMobile);
+                    // 使用这些信息来判断是哪个SIM卡
+                    if (receivedMobile.isEmpty()) {
+                        Toast.makeText(SmsService.this, "无法获取到手机号，请确实手机信息权限", Toast.LENGTH_LONG).show();
+                    }
+                }
+
 
                 String dContent = content;
                 String suffix = mNativeDataManager.getContentSuffix();
@@ -93,27 +130,39 @@ public class SmsService extends IntentService {
                                 "发送号码: " + mContactList.get(i).getContactNum() + "\n" + dContent;
                     }
                 }
+                String extractCode = extractCode(dContent);
                 if (!dContent.contains("联系人:")) {
                     dContent = "发送号码: " + mobile + "\n" + dContent;
+                    //+86XXXXXXXXXXX
+//                    dContent = receivedMobile.substring(10) + "->" + mobile + "\n" + dContent;
 
                 }
                 LogUtil.e("dContent:" + dContent);
-                if (mNativeDataManager.getSmsRelay()) {
-                    SmsRelayerManager.relaySms(SmsService.this,mNativeDataManager.getObjectMobile(), dContent);
-                }
+//                if (mNativeDataManager.getSmsRelay()) {
+//                    SmsRelayerManager.relaySms(SmsService.this, mNativeDataManager.getObjectMobile(), dContent, mNativeDataManager.getSimIndex());
+//                }
                 if (mNativeDataManager.getEmailRelay()) {
                     dContent = dContent.replace("\n", "<br>");
                     LogUtil.e("email=>" + dContent);
-                    EmailRelayerManager.relayEmail(mNativeDataManager, dContent);
+                    String title = "";
+
+                    if (extractCode == null) {
+                        title = "尾号:" + receivedMobile.substring(10);
+                    } else {
+                        title = "尾号:" + receivedMobile.substring(10) + "->" + "验证码:" + extractCode;
+                    }
+
+                    EmailRelayerManager.relayEmail(mNativeDataManager, title, dContent);
                 }
                 LogUtil.e("mobile=>" + mobile);
                 if (mNativeDataManager.getInnerRelay() && mobile.equals(mNativeDataManager.getInnerMobile())) {
-               int sIndex = content.indexOf(mNativeDataManager.getInnerRule());
-               if (sIndex != -1){
-                   String transferPhone  =  content.substring(0,sIndex);
-                   String transferContent  =  content.substring(sIndex+1);
-                   SmsRelayerManager.relaySms(SmsService.this,transferPhone, transferContent);
-                     }
+                    int sIndex = content.indexOf(mNativeDataManager.getInnerRule());
+                    if (sIndex != -1) {
+                        String transferPhone = content.substring(0, sIndex);
+                        String transferContent = content.substring(sIndex + 1);
+                        //这里simIndex卡1是0卡2是1
+                        SmsRelayerManager.relaySms(SmsService.this, transferPhone, transferContent, subId);
+                    }
 
                 }
 
@@ -135,4 +184,25 @@ public class SmsService extends IntentService {
         mDataBaseManager.closeHelper();
         super.onDestroy();
     }
+
+    public static String extractCode(String content) {
+        // 正则表达式匹配4位数字验证码
+        if (content.contains("码") || content.contains("code")) {
+            String regex = "(\\d{4,6})";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(content);
+
+            if (matcher.find()) {
+                // 返回第一个匹配的验证码
+                return matcher.group();
+            }
+            // 如果没有找到匹配的，返回null
+            return null;
+        } else {
+            return null;
+        }
+
+
+    }
+
 }
