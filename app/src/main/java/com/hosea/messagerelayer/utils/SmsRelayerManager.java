@@ -12,6 +12,7 @@ import android.telephony.SubscriptionManager;
 
 import androidx.core.app.ActivityCompat;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.hosea.messagerelayer.activity.MainActivity;
 
 import java.util.ArrayList;
@@ -65,10 +66,13 @@ public class SmsRelayerManager {
                 SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subscriptionId);
                 if (content.length() > 70) {//短信内容大于70字数
                     ArrayList<String> divideContents = smsManager.divideMessage(content);//将短信切分成集合
+                    LogUtils.i("转发内部短信成功",mobile,divideContents);
                     smsManager.sendMultipartTextMessage(mobile, null, divideContents, null, null);
                 } else {
+                    LogUtils.i("转发内部短信成功",mobile,content);
                     smsManager.sendTextMessage(mobile, null, content, null, null);
                 }
+
                 break;
             }
 

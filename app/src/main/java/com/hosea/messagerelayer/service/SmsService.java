@@ -154,6 +154,7 @@ public class SmsService extends IntentService {
                 }
                 LogUtils.i("mobile=>" + mobile);
                 if (mNativeDataManager.getInnerRelay() && mobile.equals(mNativeDataManager.getInnerMobile())) {
+                    LogUtils.i("转发内部短信");
                     int sIndex = content.indexOf(mNativeDataManager.getInnerRule());
                     if (sIndex != -1) {
                         String transferPhone = content.substring(0, sIndex);
