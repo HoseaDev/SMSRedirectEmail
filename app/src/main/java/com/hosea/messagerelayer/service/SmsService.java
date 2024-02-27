@@ -6,19 +6,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.hosea.messagerelayer.bean.Contact;
 import com.hosea.messagerelayer.confing.Constant;
 import com.hosea.messagerelayer.utils.ContactManager;
 import com.hosea.messagerelayer.utils.EmailRelayerManager;
-import com.hosea.messagerelayer.utils.LogUtil;
 import com.hosea.messagerelayer.utils.NativeDataManager;
 import com.hosea.messagerelayer.utils.SmsRelayerManager;
-import com.hosea.messagerelayer.utils.WeChatRelayerManager;
 import com.hosea.messagerelayer.utils.db.DataBaseManager;
 
 import java.util.ArrayList;
@@ -104,7 +102,7 @@ public class SmsService extends IntentService {
                     // 获取SIM卡的详细信息
                     CharSequence carrierName = subscriptionInfo.getCarrierName();
                     receivedMobile = subscriptionInfo.getNumber();
-                    LogUtil.e(" carrierName " + carrierName + " number " + receivedMobile);
+                    LogUtils.i(" carrierName " + carrierName + " number " + receivedMobile);
                     // 使用这些信息来判断是哪个SIM卡
                     if (receivedMobile.isEmpty()) {
                         Toast.makeText(SmsService.this, "无法获取到手机号，请确实手机信息权限", Toast.LENGTH_LONG).show();
@@ -124,8 +122,8 @@ public class SmsService extends IntentService {
                 ArrayList<Contact> mContactList = ContactManager.getContactList(SmsService.this);
                 for (int i = 0; i < mContactList.size(); i++) {
                     if (mContactList.get(i).getContactNum().equals(mobile)) {
-                        LogUtil.e("找到了备注:" + mContactList.get(i).getContactNum());
-                        LogUtil.e("找到了备注:" + mContactList.get(i).getContactName());
+                        LogUtils.i("找到了备注:" + mContactList.get(i).getContactNum());
+                        LogUtils.i("找到了备注:" + mContactList.get(i).getContactName());
                         dContent = "联系人: " + mContactList.get(i).getContactName() + "\n" +
                                 "发送号码: " + mContactList.get(i).getContactNum() + "\n" + dContent;
                     }
@@ -137,13 +135,13 @@ public class SmsService extends IntentService {
 //                    dContent = receivedMobile.substring(10) + "->" + mobile + "\n" + dContent;
 
                 }
-                LogUtil.e("dContent:" + dContent);
+                LogUtils.i("最终转发出的内容:" + dContent);
 //                if (mNativeDataManager.getSmsRelay()) {
 //                    SmsRelayerManager.relaySms(SmsService.this, mNativeDataManager.getObjectMobile(), dContent, mNativeDataManager.getSimIndex());
 //                }
                 if (mNativeDataManager.getEmailRelay()) {
                     dContent = dContent.replace("\n", "<br>");
-                    LogUtil.e("email=>" + dContent);
+                    LogUtils.i("\n换成br =>" + dContent);
                     String title = "";
 
                     if (extractCode == null) {
@@ -154,7 +152,7 @@ public class SmsService extends IntentService {
 
                     EmailRelayerManager.relayEmail(mNativeDataManager, title, dContent);
                 }
-                LogUtil.e("mobile=>" + mobile);
+                LogUtils.i("mobile=>" + mobile);
                 if (mNativeDataManager.getInnerRelay() && mobile.equals(mNativeDataManager.getInnerMobile())) {
                     int sIndex = content.indexOf(mNativeDataManager.getInnerRule());
                     if (sIndex != -1) {
@@ -170,7 +168,7 @@ public class SmsService extends IntentService {
 //                    //这里如果要做好需要自己做一些判断..比如当前显示的是哪个界面.
 //                    //微信就不用管.其他界面就给提示.不能处理或者手动跳转处理.
 //                    //我这边用的测试机一直在聊天界面这里就先不处理这个东西了.
-//                    LogUtil.e("relayMessage: " + dContent);
+//                     LogUtils.i("relayMessage: " + dContent);
 //                    WeChatRelayerManager.jumpWeChat(getBaseContext(), dContent);
 //                }
             }

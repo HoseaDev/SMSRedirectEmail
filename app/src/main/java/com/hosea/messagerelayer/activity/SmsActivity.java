@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.hosea.messagerelayer.R;
 import com.hosea.messagerelayer.adapter.SmsAdapter;
 import com.hosea.messagerelayer.bean.SmsBean;
@@ -81,7 +82,7 @@ public class SmsActivity extends BaseActivity {
         String[] projection = new String[]{"_id", "address", "person", "body", "date", "type"};
         Cursor cur = cr.query(SMS_INBOX, projection, null, null, "date desc");
         if (null == cur) {
-            Log.i("ooc", "************cur == null");
+             LogUtils.i("ooc", "************cur == null");
             return;
         }
         while (cur.moveToNext()) {

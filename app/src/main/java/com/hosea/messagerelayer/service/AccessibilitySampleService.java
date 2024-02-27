@@ -12,8 +12,8 @@ import android.os.Handler;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.hosea.messagerelayer.confing.Constant;
-import com.hosea.messagerelayer.utils.LogUtil;
 import com.hosea.messagerelayer.utils.NativeDataManager;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class AccessibilitySampleService extends AccessibilityService {
     protected void onServiceConnected() {
         super.onServiceConnected();
         flag = false;
-        LogUtil.e("成功连上");
+         LogUtils.i("成功连上");
 
 
         IntentFilter intentFilter = new IntentFilter();
@@ -50,7 +50,7 @@ public class AccessibilitySampleService extends AccessibilityService {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            LogUtil.e("接收到:" + intent.getStringExtra(Constant.WECHAT_CONTENT));
+             LogUtils.i("接收到:" + intent.getStringExtra(Constant.WECHAT_CONTENT));
             if (accessibilityNodeInfo == null) {
                 return;
             }
@@ -75,7 +75,7 @@ public class AccessibilitySampleService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         int eventType = event.getEventType();
-        LogUtil.e(eventType + "             " + Integer.toHexString(eventType) + "         " + event.getClassName());
+         LogUtils.i(eventType + "             " + Integer.toHexString(eventType) + "         " + event.getClassName());
         accessibilityNodeInfo = getRootInActiveWindow();
         switch (eventType) {
             case AccessibilityEvent.TYPE_VIEW_SCROLLED:
@@ -167,15 +167,15 @@ public class AccessibilitySampleService extends AccessibilityService {
 //                if (listivew.size() > 0) {
 //                    List<AccessibilityNodeInfo> child = listivew.get(0).findAccessibilityNodeInfosByText("鸡翅膀");
 //                    if (child.size()>0){
-//                        LogUtil.e("child:"+child.get(0));
-//                        LogUtil.e("child:"+child.get(0).getParent());
-//                        LogUtil.e("child:"+child.get(0).getViewIdResourceName());
-//                        LogUtil.e("child:"+child.get(0).getChildCount());
-//                        LogUtil.e("child:"+child.get(0).getClassName());
-//                        LogUtil.e("child:"+child.get(0).getContentDescription());
-//                        LogUtil.e("child:"+child.get(0).getLabeledBy());
-//                        LogUtil.e("child:"+child.get(0).getLabelFor());
-//                        LogUtil.e("child:"+child.get(0).getWindowId());
+//                         LogUtils.i("child:"+child.get(0));
+//                         LogUtils.i("child:"+child.get(0).getParent());
+//                         LogUtils.i("child:"+child.get(0).getViewIdResourceName());
+//                         LogUtils.i("child:"+child.get(0).getChildCount());
+//                         LogUtils.i("child:"+child.get(0).getClassName());
+//                         LogUtils.i("child:"+child.get(0).getContentDescription());
+//                         LogUtils.i("child:"+child.get(0).getLabeledBy());
+//                         LogUtils.i("child:"+child.get(0).getLabelFor());
+//                         LogUtils.i("child:"+child.get(0).getWindowId());
 //                        child.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
 //                    }
 //                }
@@ -187,9 +187,9 @@ public class AccessibilitySampleService extends AccessibilityService {
                 List<AccessibilityNodeInfo> list = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/as6");
 
                 for (int i = 0; i < list.size(); i++) {
-                    LogUtil.e("--->" + list.get(i).getText() + "");
+                     LogUtils.i("--->" + list.get(i).getText() + "");
                     if (list.get(i).getText().toString().equals("逝去")) {
-                        LogUtil.e("--->click");
+                         LogUtils.i("--->click");
                         list.get(i).getParent().performAction(AccessibilityNodeInfo.ACTION_CLICK);
                         try {
                             Thread.sleep(1000);
@@ -204,20 +204,20 @@ public class AccessibilitySampleService extends AccessibilityService {
                     }
                 }
 //                if (list.size() > 0) {
-//                    LogUtil.e(list.size() + "");
+//                     LogUtils.i(list.size() + "");
 //                    for (int i = 0; i < list.get(0).getChildCount(); i++) {
-//                        LogUtil.e(list.get(0).getChild(i).getContentDescription() + "");
+//                         LogUtils.i(list.get(0).getChild(i).getContentDescription() + "");
 //                    }
-//                    LogUtil.e(list.get(0).getChild(0).findAccessibilityNodeInfosByText("鸡翅膀").get(0).getContentDescription() + "");
-//                    LogUtil.e("--->: " + list.get(0).getChild(0));
-//                    LogUtil.e("--->: " + list.get(0).getChild(0).getChildCount());
+//                     LogUtils.i(list.get(0).getChild(0).findAccessibilityNodeInfosByText("鸡翅膀").get(0).getContentDescription() + "");
+//                     LogUtils.i("--->: " + list.get(0).getChild(0));
+//                     LogUtils.i("--->: " + list.get(0).getChild(0).getChildCount());
 //                } else {
-//                    LogUtil.e("节点小于0");
+//                     LogUtils.i("节点小于0");
 //                }
 
 //                for (int i = 0; i < accessibilityNodeInfo.getChild(0).getChildCount(); i++) {
-//                    LogUtil.e("child object--->: " + accessibilityNodeInfo.getChild(0).getChild(i));
-//                    LogUtil.e("child--->: " + accessibilityNodeInfo.getChild(0).getChild(i).getContentDescription());
+//                     LogUtils.i("child object--->: " + accessibilityNodeInfo.getChild(0).getChild(i));
+//                     LogUtils.i("child--->: " + accessibilityNodeInfo.getChild(0).getChild(i).getContentDescription());
 //                }
 //                if (list.size() >= 2) {
 //                    AccessibilityNodeInfo tempInfo = list.get(1);
@@ -298,9 +298,9 @@ public class AccessibilitySampleService extends AccessibilityService {
     private void sendChatMsg() {
         List<AccessibilityNodeInfo> list = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/acd");//微信6.6.6版本修改为发表
         if (performClickBtn(list)) {
-            LogUtil.e("成功");
+             LogUtils.i("成功");
         } else {
-            LogUtil.e("失败");
+             LogUtils.i("失败");
         }
 
     }
@@ -433,7 +433,7 @@ public class AccessibilitySampleService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LogUtil.e("服务被杀死!");
+         LogUtils.i("服务被杀死!");
         unregisterReceiver(myReceiver);
     }
 }

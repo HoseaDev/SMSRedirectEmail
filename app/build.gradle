@@ -40,5 +40,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.google.android:flexbox:0.1.2'
     implementation 'com.yanzhenjie:permission:2.0.0-rc4'
+    implementation 'com.blankj:utilcodex:1.31.1'
+
 //    implementation 'com.xdandroid:hellodaemon:+'
 }

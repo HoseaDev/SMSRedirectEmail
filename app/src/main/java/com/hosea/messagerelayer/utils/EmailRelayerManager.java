@@ -2,6 +2,7 @@ package com.hosea.messagerelayer.utils;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.hosea.messagerelayer.bean.EmailMessage;
 import com.hosea.messagerelayer.confing.Constant;
 
@@ -219,8 +220,8 @@ public class EmailRelayerManager {
         message.setSenderAccount(dataManager.getEmailAccount());
         message.setSenderName(dataManager.getEmailSenderName());
         message.setReceiverAccount(dataManager.getEmailToAccount());
-        Log.i("EmailRelayerManager", "real_length()" + getRealLength(content) + "");
-        Log.i("EmailRelayerManager", "content.length():" + content.length() + "");
+         LogUtils.i("EmailRelayerManager", "real_length()" + getRealLength(content) + "");
+         LogUtils.i("EmailRelayerManager", "content.length():" + content.length() + "");
         //小于中文加英文大于240个字符就显示原主题.
         if (getRealLength(content) < 240) {
             String[] split = content.split("<br>");

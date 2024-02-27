@@ -14,6 +14,7 @@ import android.telephony.SubscriptionManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.hosea.messagerelayer.bean.SmsBean;
 import com.hosea.messagerelayer.confing.Constant;
 import com.hosea.messagerelayer.service.SmsService;
@@ -43,7 +44,8 @@ public class MessageReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Toast.makeText(context, "收到消息", Toast.LENGTH_SHORT).show();
-        Log.i("MessageReceiver", "收到消息: ");
+        LogUtils.i("MessageReceiver", "收到消息: ");
+
         this.mNativeDataManager = new NativeDataManager(context);
         DataBaseManager dataBaseManager = new DataBaseManager(context);
         ArrayList<SmsBean> smsIntercept = dataBaseManager.getSmsIntercept();
@@ -53,7 +55,7 @@ public class MessageReceiver extends BroadcastReceiver {
             if (bundle != null) {
                 Object[] pdus = (Object[]) bundle.get("pdus");
                 int subscriptionId = bundle.getInt("subscription", -1);
-                Log.i(TAG, "onReceive: subscriptionId " + subscriptionId); //1是卡1，2是卡2
+                LogUtils.i(TAG, "当前卡的id: subscriptionId " + subscriptionId); //1是卡1，2是卡2
                 SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
@@ -70,7 +72,7 @@ public class MessageReceiver extends BroadcastReceiver {
                     // 获取SIM卡的详细信息
                     CharSequence carrierName = subscriptionInfo.getCarrierName();
                     String number = subscriptionInfo.getNumber();
-                    Log.i(TAG, "onReceive: carrierName " + carrierName + " number " + number);
+                    LogUtils.i(TAG, "卡的信息: carrierName " + carrierName + " number " + number);
                     // 使用这些信息来判断是哪个SIM卡
                 }
 
@@ -85,27 +87,27 @@ public class MessageReceiver extends BroadcastReceiver {
 
 
                 }
-                Log.i("MessageReceiver", "mobile: " + mobile);
+                LogUtils.i("发送人的手机号", "mobile: " + mobile);
                 for (int i = 0; i < smsIntercept.size(); i++) {
-                    Log.i("MessageReceiver", "smsIntercept.get(" + i + ").getPhone()" + smsIntercept.get(i).getPhone());
+                    LogUtils.i("MessageReceiver", "smsIntercept.get(" + i + ").getPhone()" + smsIntercept.get(i).getPhone());
                     if (smsIntercept.get(i).getPhone().equals(mobile)) {
                         //黑名单短信
-                        Log.i("MessageReceiver", "intercept---->" + mobile);
+                        LogUtils.i("MessageReceiver", "intercept---->" + mobile);
                         return;
                     }
                 }
                 if (FormatMobile.hasPrefix(mobile)) {
                     mobile = FormatMobile.formatMobile(mobile);
                 }
-                Log.i(TAG, "sendSms: " + mobile + " -> content " + content + " -> 卡:" + subscriptionId);
+                LogUtils.i(TAG, "sendSms: " + mobile + " -> content " + content + " -> 卡:" + subscriptionId);
                 //判断是否选择卡1还是卡2发送，
 //                sendSms(context, mobile, content, mNativeDataManager.getSimIndex());
-                startSmsService(context, mobile, content,subscriptionId);
+                startSmsService(context, mobile, content, subscriptionId);
             }
         }
     }
 
-    private ComponentName startSmsService(final Context context, String mobile, String content,int subscriptionId) {
+    private ComponentName startSmsService(final Context context, String mobile, String content, int subscriptionId) {
 
 
 //        String mobile = sms.getOriginatingAddress();//发送短信的手机号码
