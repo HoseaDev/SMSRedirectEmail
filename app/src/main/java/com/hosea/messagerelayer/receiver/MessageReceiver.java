@@ -52,6 +52,28 @@ public class MessageReceiver extends BroadcastReceiver {
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 Object[] pdus = (Object[]) bundle.get("pdus");
+                int subscriptionId = bundle.getInt("subscription", -1);
+                Log.i(TAG, "onReceive: subscriptionId " + subscriptionId); //1是卡1，2是卡2
+                SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                SubscriptionInfo subscriptionInfo = subscriptionManager.getActiveSubscriptionInfo(subscriptionId);
+                if (subscriptionInfo != null) {
+                    // 获取SIM卡的详细信息
+                    CharSequence carrierName = subscriptionInfo.getCarrierName();
+                    String number = subscriptionInfo.getNumber();
+                    Log.i(TAG, "onReceive: carrierName " + carrierName + " number " + number);
+                    // 使用这些信息来判断是哪个SIM卡
+                }
+
                 String content = "";
                 SmsMessage sms = null;
                 String mobile = "";
@@ -60,7 +82,6 @@ public class MessageReceiver extends BroadcastReceiver {
                     sms = SmsMessage.createFromPdu((byte[]) pdus[i]);
                     content += sms.getMessageBody();
                     mobile = sms.getOriginatingAddress();
-
 
 
                 }
@@ -76,15 +97,15 @@ public class MessageReceiver extends BroadcastReceiver {
                 if (FormatMobile.hasPrefix(mobile)) {
                     mobile = FormatMobile.formatMobile(mobile);
                 }
-                Log.i(TAG, "sendSms: " + mobile + " -> content " + content + " -> 卡:" + mNativeDataManager.getSimIndex());
+                Log.i(TAG, "sendSms: " + mobile + " -> content " + content + " -> 卡:" + subscriptionId);
                 //判断是否选择卡1还是卡2发送，
 //                sendSms(context, mobile, content, mNativeDataManager.getSimIndex());
-                startSmsService(context, mobile, content);
+                startSmsService(context, mobile, content,subscriptionId);
             }
         }
     }
 
-    private ComponentName startSmsService(final Context context, String mobile, String content) {
+    private ComponentName startSmsService(final Context context, String mobile, String content,int subscriptionId) {
 
 
 //        String mobile = sms.getOriginatingAddress();//发送短信的手机号码
@@ -97,6 +118,7 @@ public class MessageReceiver extends BroadcastReceiver {
         Intent serviceIntent = new Intent(context, SmsService.class);
         serviceIntent.putExtra(Constant.EXTRA_MESSAGE_CONTENT, content);
         serviceIntent.putExtra(Constant.EXTRA_MESSAGE_MOBILE, mobile);
+        serviceIntent.putExtra(Constant.EXTRA_MESSAGE_RECEIVED_MOBILE_SUBID, subscriptionId);
 
         return context.startService(serviceIntent);
     }

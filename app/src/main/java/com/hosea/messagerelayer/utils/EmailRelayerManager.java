@@ -7,6 +7,8 @@ import com.hosea.messagerelayer.confing.Constant;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
@@ -34,10 +36,10 @@ public class EmailRelayerManager {
     private static final String HOST_OUTLOOK = "smtp.outlook.com";
 
     //发送短信至目标邮件
-    public static int relayEmail(NativeDataManager dataManager, String content) {
+    public static int relayEmail(NativeDataManager dataManager, String title, String content) {
         Properties props = new Properties();
         User user = getSenderUser(dataManager);
-        EmailMessage emailMessage = creatEmailMessage(content, dataManager);
+        EmailMessage emailMessage = creatEmailMessage(title, content, dataManager);
         setHost(dataManager, props);
 
         //是否开启SSL
@@ -211,7 +213,7 @@ public class EmailRelayerManager {
      * @param dataManager
      * @return
      */
-    private static EmailMessage creatEmailMessage(String content, NativeDataManager dataManager) {
+    private static EmailMessage creatEmailMessage(String title, String content, NativeDataManager dataManager) {
         EmailMessage message = new EmailMessage();
         message.setContent(content);
         message.setSenderAccount(dataManager.getEmailAccount());
@@ -226,10 +228,11 @@ public class EmailRelayerManager {
                 message.setSubject(split[1].trim());
             } else {
                 //发送测试配置.
-                message.setSubject(content);
+                message.setSubject(title);
             }
         } else {
-            message.setSubject(dataManager.getEmailSubject());
+//            message.setSubject(dataManager.getEmailSubject());
+            message.setSubject(title);
         }
         return message;
     }
@@ -251,4 +254,5 @@ public class EmailRelayerManager {
         return m;
 
     }
+
 }

@@ -9,6 +9,8 @@ public class Constant {
     //Intent传值的Extra名
     public static final String EXTRA_MESSAGE_CONTENT = "content";
     public static final String EXTRA_MESSAGE_MOBILE = "mobile";
+    //接收的手机号的id
+    public static final String EXTRA_MESSAGE_RECEIVED_MOBILE_SUBID = "received_mobile_sub_id";
     public static final String EXTRA_MESSAGE_CONTACT = "contact";
     public static final String EXTRA_DATA_CHANGE = "updata";
 

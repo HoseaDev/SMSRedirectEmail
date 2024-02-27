@@ -44,7 +44,7 @@ public class SmsRelayerManager {
      * @param dataManager
      * @param content     短信内容
      */
-    public static void relaySms(Context context, String mobile, String content, int simSlotIndex) {
+    public static void relaySms(Context context, String mobile, String content, int subId) {
 
 //        android.telephony.SmsManager smsManager = android.telephony.SmsManager.getDefault();
         SubscriptionManager subscriptionManager = SubscriptionManager.from(context);
@@ -59,18 +59,19 @@ public class SmsRelayerManager {
             return;
         }
         List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
-
-        if (subscriptionInfoList != null && subscriptionInfoList.size() > simSlotIndex) {
-            SubscriptionInfo subscriptionInfo = subscriptionInfoList.get(simSlotIndex);
-            int subscriptionId = subscriptionInfo.getSubscriptionId();
-
-            SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subscriptionId);
-            if (content.length() > 70) {//短信内容大于70字数
-                ArrayList<String> divideContents = smsManager.divideMessage(content);//将短信切分成集合
-                smsManager.sendMultipartTextMessage(mobile, null, divideContents, null, null);
-            } else {
-                smsManager.sendTextMessage(mobile, null, content, null, null);
+        for (SubscriptionInfo subscriptionInfo : subscriptionInfoList) {
+            if (subscriptionInfo.getSubscriptionId() == subId) {
+                int subscriptionId = subscriptionInfo.getSubscriptionId();
+                SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subscriptionId);
+                if (content.length() > 70) {//短信内容大于70字数
+                    ArrayList<String> divideContents = smsManager.divideMessage(content);//将短信切分成集合
+                    smsManager.sendMultipartTextMessage(mobile, null, divideContents, null, null);
+                } else {
+                    smsManager.sendTextMessage(mobile, null, content, null, null);
+                }
+                break;
             }
+
         }
 
 

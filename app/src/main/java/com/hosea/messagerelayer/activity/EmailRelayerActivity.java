@@ -421,7 +421,7 @@ public class EmailRelayerActivity extends AppCompatActivity implements
                 new AsyncTask<Void, Void, Integer>() {
                     @Override
                     protected Integer doInBackground(Void... params) {
-                        return EmailRelayerManager.relayEmail(mNativeDataManager, "配置正确！");
+                        return EmailRelayerManager.relayEmail(mNativeDataManager, "配置正确！","配置正确！");
                     }
 
                     @Override
