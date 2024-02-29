@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:gravity="center_vertical"
-        android:text="发送短信到指定号码.现在很多地方验证需要发送短信.部分手机第一次需要验证."
+        android:text="发送短信到指定号码.现在很多地方验证需要发送短信.部分手机第一次需要权限验证."
         android:textColor="@color/colorLightText"
         android:textSize="15sp" />
 
