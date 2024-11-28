@@ -32,7 +32,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         requestPermission(new ICustomCompletedListener() {
             @Override
             public void success() {
-
                 Intent serviceIntent = new Intent(MainActivity.this, ForegroundService.class);
                 startService(serviceIntent);
             }

@@ -58,6 +58,8 @@ public class EmailRelayerManager {
         setSenderToPro(props, user);
         props.put("mail.smtp.auth", true);//如果不设置，则报553错误
         props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.ssl.enable", "true");
+
 
         //getDefaultInstace得到的始终是该方法初次创建的缺省的对象，getInstace每次获取新对象
         Session session = Session.getInstance(props
@@ -70,10 +72,12 @@ public class EmailRelayerManager {
             LogUtils.i("EmailRelayerManager", "发送成功");
             return CODE_SUCCESS;
         } catch (MessagingException e) {
+            LogUtils.e("error:", e.getMessage(),e.getCause());
             LogUtils.e("EmailRelayerManager", "发送失败");
             e.printStackTrace();
             return CODE_FAILE;
         } catch (UnsupportedEncodingException e) {
+            LogUtils.e("error:", e.getMessage(),e.getCause());
             LogUtils.e("EmailRelayerManager", "发送失败");
             e.printStackTrace();
             return CODE_FAILE;
@@ -223,8 +227,8 @@ public class EmailRelayerManager {
         message.setSenderAccount(dataManager.getEmailAccount());
         message.setSenderName(dataManager.getEmailSenderName());
         message.setReceiverAccount(dataManager.getEmailToAccount());
-         LogUtils.i("EmailRelayerManager", "real_length()" + getRealLength(content) + "");
-         LogUtils.i("EmailRelayerManager", "content.length():" + content.length() + "");
+        LogUtils.i("EmailRelayerManager", "real_length()" + getRealLength(content) + "");
+        LogUtils.i("EmailRelayerManager", "content.length():" + content.length() + "");
         //小于中文加英文大于240个字符就显示原主题.
         if (getRealLength(content) < 240) {
             String[] split = content.split("<br>");

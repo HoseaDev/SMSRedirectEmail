@@ -107,7 +107,7 @@ public class MessageReceiver extends BroadcastReceiver {
         }
     }
 
-    private ComponentName startSmsService(final Context context, String mobile, String content, int subscriptionId) {
+    public static ComponentName startSmsService(final Context context, String mobile, String content, int subscriptionId) {
 
 
 //        String mobile = sms.getOriginatingAddress();//发送短信的手机号码

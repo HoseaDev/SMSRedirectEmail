@@ -38,7 +38,7 @@ dependencies {
     implementation 'com.sun.mail:android-activation:1.5.5'
     implementation 'com.squareup.okhttp3:okhttp:3.6.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.google.android:flexbox:0.1.2'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'com.yanzhenjie:permission:2.0.0-rc4'
     implementation 'com.blankj:utilcodex:1.31.1'
 

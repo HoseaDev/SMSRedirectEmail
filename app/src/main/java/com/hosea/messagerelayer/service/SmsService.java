@@ -154,9 +154,10 @@ public class SmsService extends IntentService {
                 }
                 LogUtils.i("mobile=>" + mobile);
                 if (mNativeDataManager.getInnerRelay() && mobile.equals(mNativeDataManager.getInnerMobile())) {
-                    LogUtils.i("转发内部短信");
+
                     int sIndex = content.indexOf(mNativeDataManager.getInnerRule());
                     if (sIndex != -1) {
+                        LogUtils.i("转发内部短信");
                         String transferPhone = content.substring(0, sIndex);
                         String transferContent = content.substring(sIndex + 1);
                         //这里simIndex卡1是0卡2是1
