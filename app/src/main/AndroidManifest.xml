@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hosea.messagerelayer">
+<!-- 顶部 manifest 标签去掉 package 属性 -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+
 
     <!-- 允许程序监控短信的接受 -->
     <uses-feature
@@ -84,15 +86,32 @@
         <activity
             android:name="com.hosea.messagerelayer.activity.AboutActivity"
             android:label="关于"></activity>
-        <activity android:name=".activity.WeChatConfigurationAct"></activity>
+
+        <!-- 启动 Activity 必须显式 exported -->
         <activity
             android:name="com.hosea.messagerelayer.activity.StartActivity"
-            android:theme="@style/AppTheme.Start">
+            android:theme="@style/AppTheme.Start"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <!-- 有 intent-filter 的无障碍 Service 也必须显式 exported -->
+        <service
+            android:name="com.hosea.messagerelayer.service.AccessibilitySampleService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:process=":BackgroundService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_config" />
+        </service>
 
 
         <activity
@@ -103,18 +122,7 @@
             android:taskAffinity="com.open.helper"
             android:theme="@style/Accessibility.Transparent.Activity" />
 
-        <service
-            android:name="com.hosea.messagerelayer.service.AccessibilitySampleService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:process=":BackgroundService">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_config" />
-        </service>
-        <service android:name="com.hosea.messagerelayer.service.TraceServiceImpl" />
+        
 
     </application>
 

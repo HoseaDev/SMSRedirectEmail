@@ -142,13 +142,12 @@ public class SmsService extends IntentService {
                 if (mNativeDataManager.getEmailRelay()) {
                     dContent = dContent.replace("\n", "<br>");
                     LogUtils.i("\n换成br =>" + dContent);
-                    String title = "";
 
-                    if (extractCode == null) {
-                        title = "尾号:" + receivedMobile.substring(10);
-                    } else {
-                        title = "尾号:" + receivedMobile.substring(10) + "->" + "验证码:" + extractCode;
-                    }
+                    String tail = getSimTail(receivedMobile);
+                    String title = (extractCode == null)
+                            ? "尾号:" + tail
+                            : "尾号:" + tail + "->验证码:" + extractCode;
+
                     LogUtils.i("准备发送邮件:", title, dContent);
                     EmailRelayerManager.relayEmail(mNativeDataManager, title, dContent);
                 }
@@ -201,8 +200,31 @@ public class SmsService extends IntentService {
         } else {
             return null;
         }
+    }
 
+    /**
+     * 取 SIM 号码尾号（默认后4位）；当无法获取到号码时返回一个可读占位，避免崩溃
+     */
+    private String getSimTail(String number) {
+        if (number == null) {
+            return fallbackSimTag();
+        }
+        // 仅保留数字（去掉+86、空格、短横等）
+        String digits = number.replaceAll("\\D+", "");
+        if (digits.isEmpty()) {
+            return fallbackSimTag();
+        }
+        // 后4位；长度不足4则全量返回
+        int len = digits.length();
+        return (len <= 4) ? digits : digits.substring(len - 4);
+    }
 
+    private String fallbackSimTag() {
+        // subId 为 subscriptionId；给出“卡1/卡2”之类的可读占位，避免 "尾号:" 空串
+        if (subId >= 0) {
+            return "卡" + (subId + 1);
+        }
+        return "未知";
     }
 
 }

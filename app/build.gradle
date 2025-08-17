@@ -1,14 +1,16 @@
-apply plugin: 'com.android.application'
-
+plugins {
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
+}
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    namespace "com.hosea.messagerelayer"
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.hosea.messagerelayer"
-        minSdkVersion 22
-        targetSdkVersion 29
+        minSdk 22
+        targetSdk 34
         versionCode 1
         versionName "1.0.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -22,20 +24,35 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    packaging {
+        resources {
+            excludes += [
+                    "META-INF/LICENSE.md",
+                    "META-INF/LICENSE",
+                    "META-INF/NOTICE",
+                    "META-INF/NOTICE.md",
+                    "META-INF/NOTICE.txt"
+            ]
+        }
     }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'androidx.appcompat:appcompat:1.0.0'
     testImplementation 'junit:junit:4.12'
-    implementation 'com.sun.mail:android-mail:1.5.5'
-    implementation 'com.sun.mail:android-activation:1.5.5'
+    implementation "com.sun.mail:android-mail:1.6.7"
+    implementation "com.sun.mail:android-activation:1.6.7"
     implementation 'com.squareup.okhttp3:okhttp:3.6.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
