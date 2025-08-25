@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -418,15 +420,24 @@ public class EmailRelayerActivity extends AppCompatActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final AlertDialog progressDialog = progressBuilder.show();
-                new AsyncTask<Void, Void, Integer>() {
+                progressDialog.setCancelable(true);
+
+                final AsyncTask<Void, Void, Integer>[] taskHolder = new AsyncTask[1];
+                taskHolder[0] = new AsyncTask<Void, Void, Integer>() {
                     @Override
                     protected Integer doInBackground(Void... params) {
-                        return EmailRelayerManager.relayEmail(mNativeDataManager, "配置正确！","配置正确！");
+                        try {
+                            return EmailRelayerManager.relayEmail(mNativeDataManager, "配置正确！", "配置正确！");
+                        } catch (Throwable t) { // 防止崩溃导致 onPostExecute 不回调
+                            return -1; // 代表失败
+                        }
                     }
 
                     @Override
                     protected void onPostExecute(Integer integer) {
-                        progressDialog.cancel();
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         if (integer == EmailRelayerManager.CODE_SUCCESS) {
                             mNativeDataManager.setEmailToAccount(editText.getText().toString());
                             mTextToAccount.setText(editText.getText());
@@ -435,7 +446,40 @@ public class EmailRelayerActivity extends AppCompatActivity implements
                             Toast.makeText(EmailRelayerActivity.this, "邮箱配置有误", Toast.LENGTH_SHORT).show();
                         }
                     }
+
+                    @Override
+                    protected void onCancelled() {
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                        Toast.makeText(EmailRelayerActivity.this, "已取消测试", Toast.LENGTH_SHORT).show();
+                    }
                 }.execute();
+
+                progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface d) {
+                        AsyncTask<Void, Void, Integer> t = taskHolder[0];
+                        if (t != null) {
+                            t.cancel(true);
+                        }
+                    }
+                });
+
+                // 20 秒超时保护，避免一直转圈
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AsyncTask<Void, Void, Integer> t = taskHolder[0];
+                        if (progressDialog.isShowing()) {
+                            if (t != null && t.getStatus() != AsyncTask.Status.FINISHED) {
+                                t.cancel(true);
+                            }
+                            progressDialog.dismiss();
+                            Toast.makeText(EmailRelayerActivity.this, "测试超时，请检查网络或邮箱配置", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, 20_000);
             }
         });
 
