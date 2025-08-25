@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
 
@@ -33,7 +34,23 @@ public class ForegroundService extends Service {
                 //.setContentIntent(pendingIntent)
                 .build();
 
-        startForeground(1, notification);
+
+        if (Build.VERSION.SDK_INT >= 29) {
+            // 选择与你的业务相符的类型，且必须包含在 Manifest 的 android:foregroundServiceType 中
+            startForeground(
+                    1,
+                    notification,
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                    // 或者：ServiceInfo.FOREGROUND_SERVICE_TYPE_REMOTE_MESSAGING
+                    // 如果你两者都需要，可根据具体任务在不同分支传其一；
+                    // Android 13+ 也支持按位或传多类型，但要与 Manifest 对齐。
+            );
+        } else {
+            // 老系统仍然用两参版本
+            startForeground(1, notification);
+        }
+
+//        startForeground(1, notification);
 
         // 如果你希望服务在被杀死后有尝试重新启动的行为，可以返回 START_STICKY
         return START_NOT_STICKY;

@@ -15,7 +15,14 @@
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+<!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />-->
+    <!-- 基本前台服务权限（Android 9+ 就需要） -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <!-- Android 14 对不同类型要单独授权：按需添加 -->
+    <!-- 数据同步类 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+    <!-- 远程消息类（如果做消息通道/推送转发，可以加上） -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"/>
 
     <application
         android:name="com.hosea.messagerelayer.App"
@@ -51,7 +58,11 @@
             android:enabled="true"
             android:exported="true"></service>
 
-        <service android:name=".service.ForegroundService" />
+        <service android:name=".service.ForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync|remoteMessaging"
+
+            />
 
 
         <activity
