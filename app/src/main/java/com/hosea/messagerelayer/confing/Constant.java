@@ -85,6 +85,13 @@ public class Constant {
 
     public static final String SEND_PERMISSION_HINT = "send_permission_hint";
 
+    // 最后转发时间和摘要
+    public static final String KEY_LAST_RELAY_TIME = "last_relay_time";
+    public static final String KEY_LAST_RELAY_SUMMARY = "last_relay_summary";
+
+    // 配置导出版本
+    public static final int CONFIG_EXPORT_VERSION = 1;
+
     /**
      * 选择转发的卡是卡1还是卡2.
      */

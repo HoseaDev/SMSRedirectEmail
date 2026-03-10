@@ -14,7 +14,7 @@ import com.hosea.messagerelayer.confing.SMSConfig;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final String DB_NAME = "contact.db";
     private static final String CREAD_DB_SQL = "CREATE TABLE " + Constant.DB_TABLE_NAME +
             "(" + Constant.DB_KEY_ID + " integer primary key autoincrement" +
@@ -33,10 +33,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREAD_DB_SQL);
         db.execSQL(CREAD_DB_SQL_SMS);
+        db.execSQL(ForwardingLogManager.CREATE_TABLE_SQL);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        if (oldVersion < 2) {
+            db.execSQL(ForwardingLogManager.CREATE_TABLE_SQL);
+        }
     }
 }

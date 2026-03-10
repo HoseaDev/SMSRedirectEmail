@@ -30,9 +30,11 @@ import com.hosea.messagerelayer.utils.EmailRelayerManager;
 import com.hosea.messagerelayer.utils.NativeDataManager;
 import com.hosea.messagerelayer.utils.SmsRelayerManager;
 import com.hosea.messagerelayer.utils.db.DataBaseManager;
+import com.hosea.messagerelayer.utils.db.ForwardingLogManager;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,10 +47,16 @@ public class SmsService extends Service {
 
     private static final String TAG = "SmsService";
     private static final String CHANNEL_ID = "SmsServiceChannel";
+    private static final int MAX_RETRY = 3;
+    private static final long[] RETRY_DELAYS = {3000L, 6000L, 12000L};
 
     private HandlerThread mHandlerThread;
     private Handler mWorkHandler;
     private PowerManager.WakeLock mWakeLock;
+
+    // 跟踪进行中的操作数（含重试），归零后才 stopSelf
+    private final AtomicInteger mPendingOps = new AtomicInteger(0);
+    private volatile int mCurrentStartId;
 
     @Override
     public void onCreate() {
@@ -87,10 +95,10 @@ public class SmsService extends Service {
         final String mobile = intent.getStringExtra(Constant.EXTRA_MESSAGE_MOBILE);
         final String content = intent.getStringExtra(Constant.EXTRA_MESSAGE_CONTENT);
         final int subId = intent.getIntExtra(Constant.EXTRA_MESSAGE_RECEIVED_MOBILE_SUBID, -1);
-        final int currentStartId = startId;
+        mCurrentStartId = startId;
 
-        // 获取 WakeLock，超时 60 秒自动释放（防止泄漏）
-        mWakeLock.acquire(60 * 1000L);
+        // WakeLock 超时 90 秒（覆盖重试时间 3+6+12=21s）
+        mWakeLock.acquire(90 * 1000L);
 
         mWorkHandler.post(new Runnable() {
             @Override
@@ -100,10 +108,10 @@ public class SmsService extends Service {
                 } catch (Exception e) {
                     LogUtils.e(TAG, "处理短信转发异常: " + e.getMessage());
                 } finally {
-                    if (mWakeLock.isHeld()) {
-                        mWakeLock.release();
+                    // 如果没有待重试的操作，立即释放和停止
+                    if (mPendingOps.get() <= 0) {
+                        releaseAndStop();
                     }
-                    stopSelfSafe(currentStartId);
                 }
             }
         });
@@ -196,17 +204,18 @@ public class SmsService extends Service {
         LogUtils.i("最终转发出的内容:" + dContent);
 
         if (mNativeDataManager.getEmailRelay()) {
-            dContent = dContent.replace("\n", "<br>");
-            LogUtils.i("\n换成br =>" + dContent);
+            String emailContent = dContent.replace("\n", "<br>");
+            LogUtils.i("\n换成br =>" + emailContent);
 
             String tail = getSimTail(receivedMobile, subId);
             String title = (extractCode == null)
                     ? "尾号:" + tail
                     : "尾号:" + tail + "->验证码:" + extractCode;
 
-            LogUtils.i("准备发送邮件:", title, dContent);
-            EmailRelayerManager.relayEmail(mNativeDataManager, title, dContent);
+            LogUtils.i("准备发送邮件:", title, emailContent);
+            relayEmailWithRetry(mNativeDataManager, title, emailContent, mobile, content, 0);
         }
+
         LogUtils.i("mobile=>" + mobile);
         if (mNativeDataManager.getInnerRelay() && mobile.equals(mNativeDataManager.getInnerMobile())) {
             int sIndex = content.indexOf(mNativeDataManager.getInnerRule());
@@ -214,9 +223,117 @@ public class SmsService extends Service {
                 LogUtils.i("转发内部短信");
                 String transferPhone = content.substring(0, sIndex);
                 String transferContent = content.substring(sIndex + 1);
-                SmsRelayerManager.relaySms(this, transferPhone, transferContent, subId);
+                relaySmsWithRetry(transferPhone, transferContent, subId, mobile, content, 0);
             }
         }
+    }
+
+    /**
+     * 带重试的邮件转发
+     */
+    private void relayEmailWithRetry(final NativeDataManager mgr, final String title,
+                                      final String emailContent, final String senderMobile,
+                                      final String originalContent, final int attempt) {
+        mPendingOps.incrementAndGet();
+        try {
+            int result = EmailRelayerManager.relayEmail(mgr, title, emailContent);
+            if (result == EmailRelayerManager.CODE_SUCCESS) {
+                LogUtils.i(TAG, "邮件发送成功，第" + (attempt + 1) + "次尝试");
+                ForwardingLogManager.logRelay(this, senderMobile, "email", originalContent, 1, null);
+                // 更新最后转发时间和通知
+                mgr.setLastRelayTime(System.currentTimeMillis());
+                mgr.setLastRelaySummary("邮件转发成功");
+                ForegroundService.updateNotification(this);
+                mPendingOps.decrementAndGet();
+                checkAndStop();
+            } else {
+                handleEmailRetry(mgr, title, emailContent, senderMobile, originalContent, attempt);
+            }
+        } catch (Exception e) {
+            LogUtils.e(TAG, "邮件发送异常: " + e.getMessage());
+            handleEmailRetry(mgr, title, emailContent, senderMobile, originalContent, attempt);
+        }
+    }
+
+    private void handleEmailRetry(final NativeDataManager mgr, final String title,
+                                   final String emailContent, final String senderMobile,
+                                   final String originalContent, final int attempt) {
+        if (attempt < MAX_RETRY - 1) {
+            long delay = RETRY_DELAYS[attempt];
+            LogUtils.w(TAG, "邮件发送失败，第" + (attempt + 1) + "次，" + delay + "ms后重试");
+            ForwardingLogManager.logRelay(this, senderMobile, "email", originalContent, 0,
+                    "第" + (attempt + 1) + "次尝试失败，准备重试");
+            mPendingOps.decrementAndGet();
+            mWorkHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    relayEmailWithRetry(mgr, title, emailContent, senderMobile, originalContent, attempt + 1);
+                }
+            }, delay);
+        } else {
+            LogUtils.e(TAG, "邮件发送最终失败，已尝试" + (attempt + 1) + "次");
+            ForwardingLogManager.logRelay(this, senderMobile, "email", originalContent, 0,
+                    "已重试" + (attempt + 1) + "次，发送失败");
+            mPendingOps.decrementAndGet();
+            checkAndStop();
+        }
+    }
+
+    /**
+     * 带重试的内部短信转发
+     */
+    private void relaySmsWithRetry(final String transferPhone, final String transferContent,
+                                    final int subId, final String senderMobile,
+                                    final String originalContent, final int attempt) {
+        mPendingOps.incrementAndGet();
+        try {
+            SmsRelayerManager.relaySms(this, transferPhone, transferContent, subId);
+            LogUtils.i(TAG, "短信转发成功，第" + (attempt + 1) + "次尝试");
+            ForwardingLogManager.logRelay(this, senderMobile, "sms", originalContent, 1, null);
+            NativeDataManager mgr = new NativeDataManager(this);
+            mgr.setLastRelayTime(System.currentTimeMillis());
+            mgr.setLastRelaySummary("短信转发至" + transferPhone);
+            ForegroundService.updateNotification(this);
+            mPendingOps.decrementAndGet();
+            checkAndStop();
+        } catch (Exception e) {
+            LogUtils.e(TAG, "短信转发异常: " + e.getMessage());
+            if (attempt < MAX_RETRY - 1) {
+                long delay = RETRY_DELAYS[attempt];
+                LogUtils.w(TAG, "短信转发失败，第" + (attempt + 1) + "次，" + delay + "ms后重试");
+                ForwardingLogManager.logRelay(this, senderMobile, "sms", originalContent, 0,
+                        "第" + (attempt + 1) + "次尝试失败，准备重试");
+                mPendingOps.decrementAndGet();
+                mWorkHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        relaySmsWithRetry(transferPhone, transferContent, subId, senderMobile, originalContent, attempt + 1);
+                    }
+                }, delay);
+            } else {
+                LogUtils.e(TAG, "短信转发最终失败，已尝试" + (attempt + 1) + "次");
+                ForwardingLogManager.logRelay(this, senderMobile, "sms", originalContent, 0,
+                        "已重试" + (attempt + 1) + "次，发送失败");
+                mPendingOps.decrementAndGet();
+                checkAndStop();
+            }
+        }
+    }
+
+    /**
+     * 检查是否所有操作已完成，如果是则释放资源并停止服务
+     */
+    private void checkAndStop() {
+        if (mPendingOps.get() <= 0) {
+            releaseAndStop();
+        }
+    }
+
+    private void releaseAndStop() {
+        if (mWakeLock.isHeld()) {
+            mWakeLock.release();
+        }
+        stopSelfSafe(mCurrentStartId);
     }
 
     @Nullable

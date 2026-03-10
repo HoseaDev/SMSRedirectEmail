@@ -202,11 +202,20 @@ public class NativeDataManager {
     }
 
 
-//    /**
-//     * 用户选择的是卡1还是卡2
-//     */
-//    public  int getSimIndex(){
-//        return mPreference.getInt(Constant.SIM_INDEX, 0);
-//    }
+    public void setLastRelayTime(long timestamp) {
+        mPreference.edit().putLong(Constant.KEY_LAST_RELAY_TIME, timestamp).apply();
+    }
+
+    public long getLastRelayTime() {
+        return mPreference.getLong(Constant.KEY_LAST_RELAY_TIME, 0);
+    }
+
+    public void setLastRelaySummary(String summary) {
+        mPreference.edit().putString(Constant.KEY_LAST_RELAY_SUMMARY, summary).apply();
+    }
+
+    public String getLastRelaySummary() {
+        return mPreference.getString(Constant.KEY_LAST_RELAY_SUMMARY, null);
+    }
 
 }

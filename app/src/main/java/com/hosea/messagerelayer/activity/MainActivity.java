@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -19,11 +20,16 @@ import com.hosea.messagerelayer.R;
 import com.hosea.messagerelayer.listener.ICustomCompletedListener;
 import com.hosea.messagerelayer.service.ForegroundService;
 import com.hosea.messagerelayer.utils.BackgroundSettingsHelper;
+import com.hosea.messagerelayer.utils.ConfigExportImportManager;
 import com.hosea.messagerelayer.utils.NativeDataManager;
 
 import com.yanzhenjie.permission.Permission;
 
+import org.json.JSONObject;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener {
+
+    private static final int REQUEST_IMPORT_CONFIG = 1001;
 
     private RelativeLayout mSmsLayout, mEmailLayout, mRuleLayout, mPermissionLayout;
     private NativeDataManager mNativeDataManager;
@@ -96,6 +102,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         return false;
                     }
                 }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        // 转发日志
+        menu.add("转发日志").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                startActivity(new Intent(MainActivity.this, ForwardingLogActivity.class));
+                return true;
+            }
+        }).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        // 导出配置
+        menu.add("导出配置").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                doExportConfig();
+                return true;
+            }
+        }).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        // 导入配置
+        menu.add("导入配置").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                doImportConfig();
+                return true;
+            }
+        }).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -173,5 +206,84 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    private void doExportConfig() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    return ConfigExportImportManager.exportToFile(MainActivity.this);
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String fileName) {
+                if (fileName != null) {
+                    Toast.makeText(MainActivity.this,
+                            "配置已导出到 Downloads/" + fileName + "\n注意：文件包含敏感信息，请妥善保管",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "导出失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
+    }
+
+    private void doImportConfig() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/json");
+        // 兼容部分文件管理器不识别 json 类型
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"application/json", "text/plain", "*/*"});
+        startActivityForResult(intent, REQUEST_IMPORT_CONFIG);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMPORT_CONFIG && resultCode == RESULT_OK && data != null) {
+            final Uri uri = data.getData();
+            if (uri == null) return;
+
+            new AlertDialog.Builder(this)
+                    .setTitle("确认导入")
+                    .setMessage("确定要导入配置吗？当前所有配置将被覆盖。")
+                    .setPositiveButton("导入", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            performImport(uri);
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .show();
+        }
+    }
+
+    private void performImport(final Uri uri) {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                try {
+                    JSONObject json = ConfigExportImportManager.readFromUri(MainActivity.this, uri);
+                    ConfigExportImportManager.importConfig(MainActivity.this, json);
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                if (success) {
+                    Toast.makeText(MainActivity.this, "配置导入成功，部分设置可能需要重启应用生效", Toast.LENGTH_LONG).show();
+                    // 刷新菜单状态
+                    invalidateOptionsMenu();
+                } else {
+                    Toast.makeText(MainActivity.this, "导入失败，请检查文件格式", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
+    }
 
 }
