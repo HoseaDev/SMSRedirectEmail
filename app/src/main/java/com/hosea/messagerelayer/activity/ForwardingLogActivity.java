@@ -2,6 +2,7 @@ package com.hosea.messagerelayer.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,8 +73,18 @@ public class ForwardingLogActivity extends AppCompatActivity {
                 .setPositiveButton("清空", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mLogManager.clearAllLogs();
-                        loadLogs();
+                        new AsyncTask<Void, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+                                mLogManager.clearAllLogs();
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void v) {
+                                loadLogs();
+                            }
+                        }.execute();
                     }
                 })
                 .setNegativeButton("取消", null)
@@ -81,17 +92,27 @@ public class ForwardingLogActivity extends AppCompatActivity {
     }
 
     private void loadLogs() {
-        mLogs.clear();
-        mLogs.addAll(mLogManager.queryLogs(200, 0));
-        mAdapter.notifyDataSetChanged();
+        new AsyncTask<Void, Void, ArrayList<ForwardingLog>>() {
+            @Override
+            protected ArrayList<ForwardingLog> doInBackground(Void... voids) {
+                return mLogManager.queryLogs(200, 0);
+            }
 
-        if (mLogs.isEmpty()) {
-            mEmptyText.setVisibility(View.VISIBLE);
-            mListView.setVisibility(View.GONE);
-        } else {
-            mEmptyText.setVisibility(View.GONE);
-            mListView.setVisibility(View.VISIBLE);
-        }
+            @Override
+            protected void onPostExecute(ArrayList<ForwardingLog> result) {
+                mLogs.clear();
+                mLogs.addAll(result);
+                mAdapter.notifyDataSetChanged();
+
+                if (mLogs.isEmpty()) {
+                    mEmptyText.setVisibility(View.VISIBLE);
+                    mListView.setVisibility(View.GONE);
+                } else {
+                    mEmptyText.setVisibility(View.GONE);
+                    mListView.setVisibility(View.VISIBLE);
+                }
+            }
+        }.execute();
     }
 
     private class LogAdapter extends BaseAdapter {

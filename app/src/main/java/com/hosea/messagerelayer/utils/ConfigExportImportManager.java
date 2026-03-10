@@ -213,8 +213,16 @@ public class ConfigExportImportManager {
             Uri uri = context.getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
             if (uri != null) {
                 OutputStream os = context.getContentResolver().openOutputStream(uri);
-                os.write(jsonStr.getBytes("UTF-8"));
-                os.close();
+                if (os == null) {
+                    throw new Exception("无法打开输出流");
+                }
+                try {
+                    os.write(jsonStr.getBytes("UTF-8"));
+                } finally {
+                    os.close();
+                }
+            } else {
+                throw new Exception("无法创建文件");
             }
         } else {
             // Android 9 及以下直接写文件
@@ -236,14 +244,20 @@ public class ConfigExportImportManager {
      */
     public static JSONObject readFromUri(Context context, Uri uri) throws Exception {
         InputStream is = context.getContentResolver().openInputStream(uri);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
+        if (is == null) {
+            throw new Exception("无法打开文件");
         }
-        reader.close();
-        is.close();
-        return new JSONObject(sb.toString());
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            reader.close();
+            return new JSONObject(sb.toString());
+        } finally {
+            is.close();
+        }
     }
 }

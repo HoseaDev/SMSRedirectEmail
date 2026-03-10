@@ -97,7 +97,7 @@ public class ForegroundService extends Service {
                 NotificationChannel channel = new NotificationChannel(
                         CHANNEL_ID,
                         "前台服务通道",
-                        NotificationManager.IMPORTANCE_DEFAULT
+                        NotificationManager.IMPORTANCE_LOW
                 );
                 NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 nm.createNotificationChannel(channel);
@@ -106,7 +106,8 @@ public class ForegroundService extends Service {
             NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             nm.notify(NOTIFICATION_ID, notification);
         } catch (Exception e) {
-            // 通知更新失败不影响主流程
+            // 通知更新失败不影响主流程，仅记录日志
+            com.blankj.utilcode.util.LogUtils.w("ForegroundService", "更新通知失败: " + e.getMessage());
         }
     }
 
@@ -115,7 +116,7 @@ public class ForegroundService extends Service {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
                     "前台服务通道",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_LOW
             );
 
             NotificationManager manager = getSystemService(NotificationManager.class);

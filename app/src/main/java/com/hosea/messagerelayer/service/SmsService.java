@@ -56,7 +56,6 @@ public class SmsService extends Service {
 
     // 跟踪进行中的操作数（含重试），归零后才 stopSelf
     private final AtomicInteger mPendingOps = new AtomicInteger(0);
-    private volatile int mCurrentStartId;
 
     @Override
     public void onCreate() {
@@ -88,16 +87,15 @@ public class SmsService extends Service {
         }
 
         if (intent == null) {
-            stopSelfSafe(startId);
+            stopSelf();
             return START_NOT_STICKY;
         }
 
         final String mobile = intent.getStringExtra(Constant.EXTRA_MESSAGE_MOBILE);
         final String content = intent.getStringExtra(Constant.EXTRA_MESSAGE_CONTENT);
         final int subId = intent.getIntExtra(Constant.EXTRA_MESSAGE_RECEIVED_MOBILE_SUBID, -1);
-        mCurrentStartId = startId;
 
-        // WakeLock 超时 90 秒（覆盖重试时间 3+6+12=21s）
+        // WakeLock 超时 90 秒（覆盖重试时间 3+6+12=21s），自动释放兜底防泄漏
         mWakeLock.acquire(90 * 1000L);
 
         mWorkHandler.post(new Runnable() {
@@ -330,10 +328,14 @@ public class SmsService extends Service {
     }
 
     private void releaseAndStop() {
-        if (mWakeLock.isHeld()) {
-            mWakeLock.release();
+        try {
+            if (mWakeLock.isHeld()) {
+                mWakeLock.release();
+            }
+        } catch (Exception e) {
+            LogUtils.w(TAG, "释放WakeLock异常: " + e.getMessage());
         }
-        stopSelfSafe(mCurrentStartId);
+        stopSelf();
     }
 
     @Nullable
@@ -348,10 +350,6 @@ public class SmsService extends Service {
             mHandlerThread.quitSafely();
         }
         super.onDestroy();
-    }
-
-    private void stopSelfSafe(int startId) {
-        stopSelf(startId);
     }
 
     public static String extractCode(String content) {

@@ -82,11 +82,15 @@ public class DataBaseManager {
         SQLiteDatabase database = mHelper.getReadableDatabase();
         Cursor cursor = database.query(Constant.DB_TABLE_NAME
                 , null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            Contact contact = new Contact();
-            contact.setContactName(cursor.getString(cursor.getColumnIndex(Constant.DB_KEY_NAME)));
-            contact.setContactNum(cursor.getString(cursor.getColumnIndex(Constant.DB_KEY_MOBLIE)));
-            contactList.add(contact);
+        try {
+            while (cursor.moveToNext()) {
+                Contact contact = new Contact();
+                contact.setContactName(cursor.getString(cursor.getColumnIndex(Constant.DB_KEY_NAME)));
+                contact.setContactNum(cursor.getString(cursor.getColumnIndex(Constant.DB_KEY_MOBLIE)));
+                contactList.add(contact);
+            }
+        } finally {
+            cursor.close();
         }
         return contactList;
     }
@@ -100,11 +104,15 @@ public class DataBaseManager {
         SQLiteDatabase database = mHelper.getReadableDatabase();
         Cursor cursor = database.query(SMSConfig.DB_TABLE_NAME
                 , null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            SmsBean smsBean = new SmsBean();
-            smsBean.setName(cursor.getString(cursor.getColumnIndex(Constant.DB_KEY_NAME)));
-            smsBean.setPhone(cursor.getString(cursor.getColumnIndex(Constant.DB_KEY_MOBLIE)));
-            smsBeanArrayList.add(smsBean);
+        try {
+            while (cursor.moveToNext()) {
+                SmsBean smsBean = new SmsBean();
+                smsBean.setName(cursor.getString(cursor.getColumnIndex(Constant.DB_KEY_NAME)));
+                smsBean.setPhone(cursor.getString(cursor.getColumnIndex(Constant.DB_KEY_MOBLIE)));
+                smsBeanArrayList.add(smsBean);
+            }
+        } finally {
+            cursor.close();
         }
         return smsBeanArrayList;
     }

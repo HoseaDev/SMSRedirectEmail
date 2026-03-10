@@ -44,19 +44,22 @@ public class ForwardingLogManager {
     public static void logRelay(Context context, String senderMobile, String relayType,
                                 String content, int status, String errorMsg) {
         DataBaseHelper helper = new DataBaseHelper(context);
-        SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COL_TIMESTAMP, System.currentTimeMillis());
-        values.put(COL_SENDER_MOBILE, senderMobile);
-        values.put(COL_RELAY_TYPE, relayType);
-        // 截取前100个字符作为预览
-        String preview = (content != null && content.length() > 100)
-                ? content.substring(0, 100) : content;
-        values.put(COL_CONTENT_PREVIEW, preview);
-        values.put(COL_STATUS, status);
-        values.put(COL_ERROR_MSG, errorMsg);
-        db.insert(TABLE_NAME, null, values);
-        helper.close();
+        try {
+            SQLiteDatabase db = helper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(COL_TIMESTAMP, System.currentTimeMillis());
+            values.put(COL_SENDER_MOBILE, senderMobile);
+            values.put(COL_RELAY_TYPE, relayType);
+            // 截取前100个字符作为预览
+            String preview = (content != null && content.length() > 100)
+                    ? content.substring(0, 100) : content;
+            values.put(COL_CONTENT_PREVIEW, preview);
+            values.put(COL_STATUS, status);
+            values.put(COL_ERROR_MSG, errorMsg);
+            db.insert(TABLE_NAME, null, values);
+        } finally {
+            helper.close();
+        }
     }
 
     /**
@@ -67,18 +70,21 @@ public class ForwardingLogManager {
         SQLiteDatabase db = mHelper.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null,
                 COL_TIMESTAMP + " DESC", offset + "," + limit);
-        while (cursor.moveToNext()) {
-            ForwardingLog log = new ForwardingLog();
-            log.setId(cursor.getLong(cursor.getColumnIndex(COL_ID)));
-            log.setTimestamp(cursor.getLong(cursor.getColumnIndex(COL_TIMESTAMP)));
-            log.setSenderMobile(cursor.getString(cursor.getColumnIndex(COL_SENDER_MOBILE)));
-            log.setRelayType(cursor.getString(cursor.getColumnIndex(COL_RELAY_TYPE)));
-            log.setContentPreview(cursor.getString(cursor.getColumnIndex(COL_CONTENT_PREVIEW)));
-            log.setStatus(cursor.getInt(cursor.getColumnIndex(COL_STATUS)));
-            log.setErrorMsg(cursor.getString(cursor.getColumnIndex(COL_ERROR_MSG)));
-            logs.add(log);
+        try {
+            while (cursor.moveToNext()) {
+                ForwardingLog log = new ForwardingLog();
+                log.setId(cursor.getLong(cursor.getColumnIndex(COL_ID)));
+                log.setTimestamp(cursor.getLong(cursor.getColumnIndex(COL_TIMESTAMP)));
+                log.setSenderMobile(cursor.getString(cursor.getColumnIndex(COL_SENDER_MOBILE)));
+                log.setRelayType(cursor.getString(cursor.getColumnIndex(COL_RELAY_TYPE)));
+                log.setContentPreview(cursor.getString(cursor.getColumnIndex(COL_CONTENT_PREVIEW)));
+                log.setStatus(cursor.getInt(cursor.getColumnIndex(COL_STATUS)));
+                log.setErrorMsg(cursor.getString(cursor.getColumnIndex(COL_ERROR_MSG)));
+                logs.add(log);
+            }
+        } finally {
+            cursor.close();
         }
-        cursor.close();
         return logs;
     }
 
