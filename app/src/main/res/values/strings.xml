@@ -9,4 +9,20 @@
     <string name="cancel">取消</string>
     <string name="no">NO</string>
     <string name="message_permission_always_failed">我们需要以下权限，请在设置中为我们开启：\n\n%1$s</string>
+
+    <!-- 权限检测页面 -->
+    <string name="permission_guide_title">权限检测</string>
+    <string name="permission_guide_hint">以下权限是短信转发正常工作所必需的，请确保全部开启。点击对应项目可快速设置。</string>
+    <string name="perm_sms_title">短信权限（接收+读取）</string>
+    <string name="perm_phone_title">电话状态权限</string>
+    <string name="perm_contacts_title">联系人权限</string>
+    <string name="perm_send_sms_title">发送短信权限</string>
+    <string name="perm_battery_title">电池优化白名单</string>
+    <string name="perm_autostart_title">厂商自启动/后台运行</string>
+    <string name="perm_notification_title">通知权限</string>
+    <string name="perm_status_granted">已授权</string>
+    <string name="perm_status_denied">未授权</string>
+    <string name="perm_status_unknown">无法自动检测，请手动确认</string>
+    <string name="perm_action_grant">去开启</string>
+    <string name="perm_action_settings">去设置</string>
 </resources>

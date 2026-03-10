@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew assembleDebug 2>&1 | tail -20)",
+      "WebSearch",
+      "Bash(./gradlew clean:*)",
+      "WebFetch(domain:discuss.gradle.org)",
+      "Bash(./gradlew assembleDebug 2>&1 | tail -30)",
+      "Bash(./gradlew assembleDebug 2>&1 | tail -15)"
+    ]
+  }
+}

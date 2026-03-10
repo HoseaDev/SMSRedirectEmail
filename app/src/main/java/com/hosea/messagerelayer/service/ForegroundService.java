@@ -52,8 +52,8 @@ public class ForegroundService extends Service {
 
 //        startForeground(1, notification);
 
-        // 如果你希望服务在被杀死后有尝试重新启动的行为，可以返回 START_STICKY
-        return START_NOT_STICKY;
+        // 被系统杀死后自动重启，确保前台服务常驻
+        return START_STICKY;
     }
 
     @Override
