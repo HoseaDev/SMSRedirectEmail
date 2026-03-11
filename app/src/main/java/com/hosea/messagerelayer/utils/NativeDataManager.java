@@ -218,4 +218,53 @@ public class NativeDataManager {
         return mPreference.getString(Constant.KEY_LAST_RELAY_SUMMARY, null);
     }
 
+    // 定时保号配置（按 subId 隔离，每张卡独立配置）
+    public boolean getKeepAliveEnabled(int subId) {
+        return mPreference.getBoolean(Constant.KEY_KEEP_ALIVE_ENABLED + subId, false);
+    }
+
+    public void setKeepAliveEnabled(int subId, boolean enabled) {
+        mPreference.edit().putBoolean(Constant.KEY_KEEP_ALIVE_ENABLED + subId, enabled).apply();
+    }
+
+    public String getKeepAliveTargetMobile(int subId) {
+        return mPreference.getString(Constant.KEY_KEEP_ALIVE_TARGET_MOBILE + subId, "10001");
+    }
+
+    public void setKeepAliveTargetMobile(int subId, String mobile) {
+        mPreference.edit().putString(Constant.KEY_KEEP_ALIVE_TARGET_MOBILE + subId, mobile).apply();
+    }
+
+    public int getKeepAliveIntervalDays(int subId) {
+        return mPreference.getInt(Constant.KEY_KEEP_ALIVE_INTERVAL_DAYS + subId, 7);
+    }
+
+    public void setKeepAliveIntervalDays(int subId, int days) {
+        mPreference.edit().putInt(Constant.KEY_KEEP_ALIVE_INTERVAL_DAYS + subId, days).apply();
+    }
+
+    public String getKeepAliveSmsContent(int subId) {
+        return mPreference.getString(Constant.KEY_KEEP_ALIVE_SMS_CONTENT + subId, "cxye");
+    }
+
+    public void setKeepAliveSmsContent(int subId, String content) {
+        mPreference.edit().putString(Constant.KEY_KEEP_ALIVE_SMS_CONTENT + subId, content).apply();
+    }
+
+    public long getKeepAliveLastSendTime(int subId) {
+        return mPreference.getLong(Constant.KEY_KEEP_ALIVE_LAST_SEND_TIME + subId, 0);
+    }
+
+    public void setKeepAliveLastSendTime(int subId, long timestamp) {
+        mPreference.edit().putLong(Constant.KEY_KEEP_ALIVE_LAST_SEND_TIME + subId, timestamp).apply();
+    }
+
+    public long getKeepAliveNextSendTime(int subId) {
+        return mPreference.getLong(Constant.KEY_KEEP_ALIVE_NEXT_SEND_TIME + subId, 0);
+    }
+
+    public void setKeepAliveNextSendTime(int subId, long timestamp) {
+        mPreference.edit().putLong(Constant.KEY_KEEP_ALIVE_NEXT_SEND_TIME + subId, timestamp).apply();
+    }
+
 }

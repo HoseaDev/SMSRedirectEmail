@@ -31,7 +31,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private static final int REQUEST_IMPORT_CONFIG = 1001;
 
-    private RelativeLayout mSmsLayout, mEmailLayout, mRuleLayout, mPermissionLayout;
+    private RelativeLayout mSmsLayout, mEmailLayout, mRuleLayout, mPermissionLayout, mKeepAliveLayout;
     private NativeDataManager mNativeDataManager;
 
     @Override
@@ -138,11 +138,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mEmailLayout = (RelativeLayout) findViewById(R.id.email_relay_layout);
         mRuleLayout = (RelativeLayout) findViewById(R.id.rule_layout);
         mPermissionLayout = (RelativeLayout) findViewById(R.id.permission_guide_layout);
+        mKeepAliveLayout = (RelativeLayout) findViewById(R.id.keep_alive_layout);
 
         mSmsLayout.setOnClickListener(this);
         mEmailLayout.setOnClickListener(this);
         mRuleLayout.setOnClickListener(this);
         mPermissionLayout.setOnClickListener(this);
+        mKeepAliveLayout.setOnClickListener(this);
     }
 
     /**
@@ -202,6 +204,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.permission_guide_layout:
                 startActivity(new Intent(this, PermissionGuideActivity.class));
+                break;
+            case R.id.keep_alive_layout:
+                startActivity(new Intent(this, KeepAliveActivity.class));
                 break;
         }
     }

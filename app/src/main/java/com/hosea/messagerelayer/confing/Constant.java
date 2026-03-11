@@ -96,4 +96,16 @@ public class Constant {
      * 选择转发的卡是卡1还是卡2.
      */
     public static final String SIM_INDEX = "sim_index";
+
+    // 定时保号配置（前缀，实际 key = 前缀 + subId）
+    public static final String KEY_KEEP_ALIVE_ENABLED = "keep_alive_enabled_";
+    public static final String KEY_KEEP_ALIVE_TARGET_MOBILE = "keep_alive_target_mobile_";
+    public static final String KEY_KEEP_ALIVE_INTERVAL_DAYS = "keep_alive_interval_days_";
+    public static final String KEY_KEEP_ALIVE_SMS_CONTENT = "keep_alive_sms_content_";
+    public static final String KEY_KEEP_ALIVE_LAST_SEND_TIME = "keep_alive_last_send_time_";
+    public static final String KEY_KEEP_ALIVE_NEXT_SEND_TIME = "keep_alive_next_send_time_";
+
+    // 定时保号 Intent extra
+    public static final String EXTRA_KEEP_ALIVE_SUB_ID = "keep_alive_sub_id";
+    public static final String EXTRA_KEEP_ALIVE_IS_TEST = "keep_alive_is_test";
 }

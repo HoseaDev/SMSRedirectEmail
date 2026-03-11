@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:layout_marginBottom="16dp"
+    android:padding="16dp">
+
+    <!-- 卡片标题 + 开关 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:id="@+id/tv_sim_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="卡1"
+            android:textSize="17sp"
+            android:textColor="#8e44ad"
+            android:textStyle="bold"/>
+
+        <Switch
+            android:id="@+id/switch_keep_alive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- 分割线 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e0e0e0"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- 目标号码 -->
+    <LinearLayout
+        android:id="@+id/layout_target_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="目标号码"
+            android:textSize="15sp"
+            android:textColor="#333333"/>
+
+        <TextView
+            android:id="@+id/tv_target_mobile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10001"
+            android:textSize="14sp"
+            android:textColor="#8e44ad"/>
+    </LinearLayout>
+
+    <!-- 发送间隔（每隔多少天） -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="每隔多少天发送"
+            android:textSize="15sp"
+            android:textColor="#333333"/>
+
+        <Spinner
+            android:id="@+id/spinner_interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"/>
+    </LinearLayout>
+
+    <!-- 自定义天数输入 -->
+    <LinearLayout
+        android:id="@+id/layout_custom_interval"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="输入天数"
+            android:textSize="15sp"
+            android:textColor="#333333"/>
+
+        <EditText
+            android:id="@+id/et_custom_days"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="天"
+            android:textSize="14sp"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <!-- 短信内容 -->
+    <LinearLayout
+        android:id="@+id/layout_sms_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="短信内容"
+            android:textSize="15sp"
+            android:textColor="#333333"/>
+
+        <TextView
+            android:id="@+id/tv_sms_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cxye"
+            android:textSize="14sp"
+            android:textColor="#8e44ad"
+            android:maxWidth="180dp"
+            android:ellipsize="end"
+            android:maxLines="1"/>
+    </LinearLayout>
+
+    <!-- 上次发送时间 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="上次发送"
+            android:textSize="15sp"
+            android:textColor="#333333"/>
+
+        <TextView
+            android:id="@+id/tv_last_send_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="暂无记录"
+            android:textSize="14sp"
+            android:textColor="#999999"/>
+    </LinearLayout>
+
+    <!-- 下次发送时间 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="下次发送"
+            android:textSize="15sp"
+            android:textColor="#333333"/>
+
+        <TextView
+            android:id="@+id/tv_next_send_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未设置"
+            android:textSize="14sp"
+            android:textColor="#999999"/>
+    </LinearLayout>
+
+    <!-- 分割线 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e0e0e0"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- 测试按钮 -->
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="发送测试（10秒后）"
+        android:textColor="@android:color/white"
+        android:background="#8e44ad"
+        android:layout_marginTop="4dp"/>
+
+</LinearLayout>

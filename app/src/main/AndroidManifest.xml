@@ -28,6 +28,9 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
     <!-- 通知权限（Android 13+） -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- 精确闹钟权限（Android 12+，定时保号功能） -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     <!-- 配置导出需要写入 Downloads（仅 Android 9 及以下） -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
@@ -122,6 +125,14 @@
         <activity
             android:name="com.hosea.messagerelayer.activity.ForwardingLogActivity"
             android:label="转发日志"></activity>
+        <activity
+            android:name="com.hosea.messagerelayer.activity.KeepAliveActivity"
+            android:label="短信定时保号"></activity>
+
+        <receiver
+            android:name="com.hosea.messagerelayer.receiver.KeepAliveSmsReceiver"
+            android:enabled="true"
+            android:exported="false"/>
 
         <!-- 启动 Activity 必须显式 exported -->
         <activity

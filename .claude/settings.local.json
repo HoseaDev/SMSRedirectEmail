@@ -8,7 +8,11 @@
       "Bash(./gradlew assembleDebug 2>&1 | tail -30)",
       "Bash(./gradlew assembleDebug 2>&1 | tail -15)",
       "Bash(./gradlew assembleDebug 2>&1 | tail -40)",
-      "Bash(./gradlew test:*)"
+      "Bash(./gradlew test:*)",
+      "Bash(./gradlew assembleDebug 2>&1 | tail -25)",
+      "Bash(./gradlew assembleDebug 2>&1 | tail -10)",
+      "Bash(./gradlew assembleDebug 2>&1 | tail -5)",
+      "Bash(adb shell:*)"
     ]
   }
 }

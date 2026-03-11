@@ -7,6 +7,7 @@ import android.os.Build;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.hosea.messagerelayer.service.ForegroundService;
+import com.hosea.messagerelayer.utils.KeepAliveScheduler;
 
 /**
  * 开机自启动广播接收器。
@@ -26,6 +27,9 @@ public class BootReceiver extends BroadcastReceiver {
             } else {
                 context.startService(serviceIntent);
             }
+
+            // 恢复所有已开启的定时保号闹钟
+            KeepAliveScheduler.scheduleAllEnabled(context);
         }
     }
 }

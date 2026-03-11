@@ -25,4 +25,10 @@
     <string name="perm_status_unknown">无法自动检测，请手动确认</string>
     <string name="perm_action_grant">去开启</string>
     <string name="perm_action_settings">去设置</string>
+
+    <!-- 短信定时保号 -->
+    <string name="keep_alive_title">短信定时保号</string>
+    <string name="keep_alive_no_record">暂无记录</string>
+    <string name="keep_alive_not_set">未设置</string>
+    <string name="keep_alive_test_btn">发送测试（10秒后）</string>
 </resources>
