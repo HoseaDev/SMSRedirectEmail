@@ -12,7 +12,9 @@
       "Bash(./gradlew assembleDebug 2>&1 | tail -25)",
       "Bash(./gradlew assembleDebug 2>&1 | tail -10)",
       "Bash(./gradlew assembleDebug 2>&1 | tail -5)",
-      "Bash(adb shell:*)"
+      "Bash(adb shell:*)",
+      "Bash(./gradlew assembleDebug 2>&1 | tail -50)",
+      "Bash(grep -r \"android.os.SystemProperties\\\\|hide\\\\|@hide\" /Volumes/HoseaExtension/CodeWork/androidDemos/SMSRedirectEmail/app/src --include=\"*.java\" 2>/dev/null | head -20)"
     ]
   }
 }

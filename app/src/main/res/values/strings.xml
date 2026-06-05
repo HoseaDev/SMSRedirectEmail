@@ -26,6 +26,14 @@
     <string name="perm_action_grant">去开启</string>
     <string name="perm_action_settings">去设置</string>
 
+    <!-- 默认短信应用 -->
+    <string name="perm_default_sms_title">默认短信应用</string>
+    <string name="perm_default_sms_granted">已设为默认</string>
+    <string name="perm_default_sms_denied">非默认（保号发送可能被拦截）</string>
+    <string name="perm_default_sms_set">设为默认</string>
+    <string name="perm_default_sms_restore">恢复默认</string>
+    <string name="perm_default_sms_warning">设为默认短信应用后，保号短信走系统队列发送，可绕过 OPPO/小米/华为等品牌的发送确认弹窗，提高保号成功率。</string>
+
     <!-- 短信定时保号 -->
     <string name="keep_alive_title">短信定时保号</string>
     <string name="keep_alive_no_record">暂无记录</string>

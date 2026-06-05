@@ -1,14 +1,10 @@
 package com.hosea.messagerelayer.receiver;
 
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.Manifest;
-import android.os.Build;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
@@ -24,7 +20,6 @@ import com.hosea.messagerelayer.utils.NativeDataManager;
 import com.hosea.messagerelayer.utils.db.ForwardingLogManager;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -123,17 +118,17 @@ public class KeepAliveSmsReceiver extends BroadcastReceiver {
         }
 
         // 查找目标 SIM 卡
-        SmsManager smsManager = null;
         String simInfo = "";
+        boolean simFound = false;
         for (SubscriptionInfo info : list) {
             if (info.getSubscriptionId() == subId) {
-                smsManager = SmsManager.getSmsManagerForSubscriptionId(subId);
                 simInfo = "卡: " + info.getCarrierName() + " (subId=" + subId + ")";
+                simFound = true;
                 break;
             }
         }
 
-        if (smsManager == null) {
+        if (!simFound) {
             // 列出所有可用 SIM 卡帮助排查
             StringBuilder sb = new StringBuilder("未找到 subId=").append(subId).append(" 的 SIM 卡。可用卡: ");
             for (SubscriptionInfo info : list) {
@@ -147,14 +142,9 @@ public class KeepAliveSmsReceiver extends BroadcastReceiver {
                 "准备发送: " + simInfo + " → " + mobile + " 内容: " + content);
 
         try {
-            if (content.length() > 70) {
-                ArrayList<String> parts = smsManager.divideMessage(content);
-                smsManager.sendMultipartTextMessage(mobile, null, parts, null, null);
-                LogUtils.i("KeepAliveSmsReceiver", "长短信已提交发送，共 " + parts.size() + " 段");
-            } else {
-                smsManager.sendTextMessage(mobile, null, content, null, null);
-                LogUtils.i("KeepAliveSmsReceiver", "短信已提交发送");
-            }
+            // 使用统一发送方法（默认短信 app 时写入系统队列发送，绕过 ColorOS 弹窗）
+            com.hosea.messagerelayer.utils.SmsRelayerManager.sendSmsInternal(
+                    context, subId, mobile, content, "keep_alive");
             return null; // 提交成功
         } catch (Exception e) {
             LogUtils.e("KeepAliveSmsReceiver", "sendTextMessage 异常: " + e.getMessage());

@@ -17,6 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.hosea.messagerelayer.R;
+import com.hosea.messagerelayer.activity.ForwardingLogActivity;
+import com.hosea.messagerelayer.activity.SmsInboxActivity;
 import com.hosea.messagerelayer.listener.ICustomCompletedListener;
 import com.hosea.messagerelayer.service.ForegroundService;
 import com.hosea.messagerelayer.utils.BackgroundSettingsHelper;
@@ -32,6 +34,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final int REQUEST_IMPORT_CONFIG = 1001;
 
     private RelativeLayout mSmsLayout, mEmailLayout, mRuleLayout, mPermissionLayout, mKeepAliveLayout;
+    private RelativeLayout mSmsInboxLayout;
+    private android.widget.TextView mTvSmsInboxSubtitle;
+    private java.util.concurrent.ExecutorService mExecutor = java.util.concurrent.Executors.newSingleThreadExecutor();
+    private android.os.Handler mHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private NativeDataManager mNativeDataManager;
 
     @Override
@@ -45,22 +51,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         requestPermission(new ICustomCompletedListener() {
             @Override
             public void success() {
-                Intent serviceIntent = new Intent(MainActivity.this, ForegroundService.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(serviceIntent);
-                } else {
-                    startService(serviceIntent);
-                }
-                // 引导用户关闭电池优化
-                requestIgnoreBatteryOptimization();
-                // 引导用户开启厂商自启动/后台运行设置
-                showBackgroundGuideIfNeeded();
+                startServiceAndGuide();
             }
 
             @Override
             public void failed(String msg) {
-                Toast.makeText(MainActivity.this, "不给权限没法完...再见!", Toast.LENGTH_LONG).show();
-                finish();
+                // 部分权限未授予，仍然启动服务，缺少的权限只影响对应功能
+                startServiceAndGuide();
             }
         }, Permission.READ_SMS, Permission.RECEIVE_SMS, Permission.READ_CONTACTS, Permission.READ_PHONE_STATE, Permission.SEND_SMS);
 
@@ -145,6 +142,58 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mRuleLayout.setOnClickListener(this);
         mPermissionLayout.setOnClickListener(this);
         mKeepAliveLayout.setOnClickListener(this);
+
+        mSmsInboxLayout = (RelativeLayout) findViewById(R.id.sms_inbox_layout);
+        mTvSmsInboxSubtitle = (android.widget.TextView) findViewById(R.id.tv_sms_inbox_subtitle);
+        mSmsInboxLayout.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateSmsInboxSubtitle();
+    }
+
+    private void updateSmsInboxSubtitle() {
+        mExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                // 后台线程查询未读数
+                int unread = 0;
+                try {
+                    android.database.Cursor cursor = getContentResolver().query(
+                        android.net.Uri.parse("content://sms/inbox"),
+                        new String[]{"_id"}, "read = 0", null, null);
+                    if (cursor != null) {
+                        unread = cursor.getCount();
+                        cursor.close();
+                    }
+                } catch (Exception e) { /* ignore */ }
+                final int finalUnread = unread;
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mTvSmsInboxSubtitle == null) return;
+                        if (finalUnread > 0) {
+                            mTvSmsInboxSubtitle.setText(finalUnread + " 条未读");
+                        } else {
+                            mTvSmsInboxSubtitle.setText("无未读短信");
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void startServiceAndGuide() {
+        Intent serviceIntent = new Intent(MainActivity.this, ForegroundService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        } else {
+            startService(serviceIntent);
+        }
+        requestIgnoreBatteryOptimization();
+        showBackgroundGuideIfNeeded();
     }
 
     /**
@@ -207,6 +256,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.keep_alive_layout:
                 startActivity(new Intent(this, KeepAliveActivity.class));
+                break;
+            case R.id.sms_inbox_layout:
+                startActivity(new Intent(this, SmsInboxActivity.class));
                 break;
         }
     }

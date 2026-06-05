@@ -32,4 +32,24 @@
         <item name="android:activityCloseEnterAnimation">@null</item>
         <item name="android:activityCloseExitAnimation">@anim/accessibility_bottom_out</item>
     </style>
+
+    <!-- 短信收件箱主题：无 ActionBar，白色状态栏，浅色系 -->
+    <style name="Theme.Sms.Inbox" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorPrimaryDark">#F5F5F5</item>
+        <item name="colorAccent">#1abc9c</item>
+        <item name="android:windowBackground">#F2F2F7</item>
+        <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <!-- 短信会话主题：无 ActionBar，白色状态栏 -->
+    <style name="Theme.Sms.Compose" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorPrimaryDark">#F5F5F5</item>
+        <item name="colorAccent">#1abc9c</item>
+        <item name="android:windowBackground">#F2F2F7</item>
+        <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
 </resources>

@@ -34,6 +34,8 @@
     <!-- 配置导出需要写入 Downloads（仅 Android 9 及以下） -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+    <!-- 默认短信应用需要写入短信数据库 -->
+    <uses-permission android:name="android.permission.WRITE_SMS" />
 
     <application
         android:name="com.hosea.messagerelayer.App"
@@ -129,10 +131,64 @@
             android:name="com.hosea.messagerelayer.activity.KeepAliveActivity"
             android:label="短信定时保号"></activity>
 
+        <activity
+            android:name="com.hosea.messagerelayer.activity.SmsInboxActivity"
+            android:label="短信"
+            android:exported="false"
+            android:theme="@style/Theme.Sms.Inbox" />
+
+        <activity
+            android:name="com.hosea.messagerelayer.activity.SmsComposeActivity"
+            android:label="短信"
+            android:exported="true"
+            android:theme="@style/Theme.Sms.Compose">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SENDTO" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name="com.hosea.messagerelayer.receiver.KeepAliveSmsReceiver"
             android:enabled="true"
             android:exported="false"/>
+
+        <!-- 默认短信应用所需组件 -->
+        <receiver android:name=".receiver.SmsDeliverReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_DELIVER" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receiver.MmsReceiver"
+            android:exported="true"
+            android:permission="android.permission.BROADCAST_WAP_PUSH">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".service.RespondViaMessageService"
+            android:exported="true"
+            android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE">
+            <intent-filter>
+                <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+        </service>
 
         <!-- 启动 Activity 必须显式 exported -->
         <activity

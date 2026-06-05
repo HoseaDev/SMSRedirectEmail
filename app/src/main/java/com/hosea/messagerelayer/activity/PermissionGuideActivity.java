@@ -1,6 +1,7 @@
 package com.hosea.messagerelayer.activity;
 
 import android.Manifest;
+import android.app.role.RoleManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.provider.Telephony;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +24,13 @@ import com.hosea.messagerelayer.utils.BackgroundSettingsHelper;
 import com.yanzhenjie.permission.Permission;
 
 public class PermissionGuideActivity extends BaseActivity {
+
+    private static final int REQUEST_DEFAULT_SMS = 2001;
+
+    private LinearLayout mItemDefaultSms;
+    private ImageView mIconDefaultSms;
+    private TextView mStatusDefaultSms;
+    private TextView mActionDefaultSms;
 
     private LinearLayout mItemSms, mItemPhone, mItemContacts, mItemSendSms;
     private LinearLayout mItemBattery, mItemAutostart, mItemNotification;
@@ -48,6 +57,11 @@ public class PermissionGuideActivity extends BaseActivity {
     }
 
     private void initViews() {
+        mItemDefaultSms = findViewById(R.id.item_default_sms);
+        mIconDefaultSms = findViewById(R.id.icon_default_sms);
+        mStatusDefaultSms = findViewById(R.id.status_default_sms);
+        mActionDefaultSms = findViewById(R.id.action_default_sms);
+
         mItemSms = findViewById(R.id.item_sms_permission);
         mItemPhone = findViewById(R.id.item_phone_permission);
         mItemContacts = findViewById(R.id.item_contacts_permission);
@@ -74,6 +88,13 @@ public class PermissionGuideActivity extends BaseActivity {
     }
 
     private void initClickListeners() {
+        mItemDefaultSms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleDefaultSmsApp();
+            }
+        });
+
         mItemSms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +148,6 @@ public class PermissionGuideActivity extends BaseActivity {
                     requestPermission(new PermissionRefreshListener(),
                             Manifest.permission.POST_NOTIFICATIONS);
                 } else {
-                    // Android 13 以下跳转到通知设置页
                     openNotificationSettings();
                 }
             }
@@ -135,34 +155,83 @@ public class PermissionGuideActivity extends BaseActivity {
     }
 
     private void refreshAllStatus() {
-        // 短信权限（RECEIVE_SMS + READ_SMS）
+        // 默认短信应用
+        boolean isDefault = isDefaultSmsApp();
+        mIconDefaultSms.setImageResource(isDefault
+                ? R.drawable.ic_status_granted : R.drawable.ic_status_denied);
+        mStatusDefaultSms.setText(isDefault
+                ? R.string.perm_default_sms_granted : R.string.perm_default_sms_denied);
+        mActionDefaultSms.setText(isDefault
+                ? R.string.perm_default_sms_restore : R.string.perm_default_sms_set);
+
+        // 短信权限
         boolean smsGranted = checkPermission(Manifest.permission.RECEIVE_SMS)
                 && checkPermission(Manifest.permission.READ_SMS);
         updateItemStatus(mIconSms, mStatusSms, smsGranted);
 
         // 电话状态权限
-        boolean phoneGranted = checkPermission(Manifest.permission.READ_PHONE_STATE);
-        updateItemStatus(mIconPhone, mStatusPhone, phoneGranted);
+        updateItemStatus(mIconPhone, mStatusPhone,
+                checkPermission(Manifest.permission.READ_PHONE_STATE));
 
         // 联系人权限
-        boolean contactsGranted = checkPermission(Manifest.permission.READ_CONTACTS);
-        updateItemStatus(mIconContacts, mStatusContacts, contactsGranted);
+        updateItemStatus(mIconContacts, mStatusContacts,
+                checkPermission(Manifest.permission.READ_CONTACTS));
 
         // 发送短信权限
-        boolean sendSmsGranted = checkPermission(Manifest.permission.SEND_SMS);
-        updateItemStatus(mIconSendSms, mStatusSendSms, sendSmsGranted);
+        updateItemStatus(mIconSendSms, mStatusSendSms,
+                checkPermission(Manifest.permission.SEND_SMS));
 
         // 电池优化白名单
-        boolean batteryOptimized = isIgnoringBatteryOptimizations();
-        updateItemStatus(mIconBattery, mStatusBattery, batteryOptimized);
+        updateItemStatus(mIconBattery, mStatusBattery, isIgnoringBatteryOptimizations());
 
         // 厂商自启动（无法自动检测）
         mIconAutostart.setImageResource(R.drawable.ic_status_unknown);
         mStatusAutostart.setText(R.string.perm_status_unknown);
 
         // 通知权限
-        boolean notificationEnabled = NotificationManagerCompat.from(this).areNotificationsEnabled();
-        updateItemStatus(mIconNotification, mStatusNotification, notificationEnabled);
+        updateItemStatus(mIconNotification, mStatusNotification,
+                NotificationManagerCompat.from(this).areNotificationsEnabled());
+    }
+
+    private boolean isDefaultSmsApp() {
+        String defaultPkg = Telephony.Sms.getDefaultSmsPackage(this);
+        return getPackageName().equals(defaultPkg);
+    }
+
+    private void toggleDefaultSmsApp() {
+        if (isDefaultSmsApp()) {
+            // 已是默认，引导恢复系统短信
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startActivity(new Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS));
+            } else {
+                Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME,
+                        Telephony.Sms.getDefaultSmsPackage(this));
+                startActivity(intent);
+            }
+        } else {
+            // 请求设为默认
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                RoleManager roleManager = (RoleManager) getSystemService(Context.ROLE_SERVICE);
+                if (roleManager.isRoleAvailable(RoleManager.ROLE_SMS)) {
+                    startActivityForResult(
+                            roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS),
+                            REQUEST_DEFAULT_SMS);
+                }
+            } else {
+                Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getPackageName());
+                startActivity(intent);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_DEFAULT_SMS) {
+            refreshAllStatus();
+        }
     }
 
     private boolean checkPermission(String permission) {

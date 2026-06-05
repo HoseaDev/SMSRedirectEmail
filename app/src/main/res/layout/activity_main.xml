@@ -141,5 +141,42 @@
             android:textColor="@android:color/white"/>
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/sms_inbox_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="#1abc9c">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/sms_image"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="20dp"
+            android:text="短信收件箱"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"/>
+        <TextView
+            android:id="@+id/tv_sms_inbox_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="15dp"
+            android:textSize="13sp"
+            android:textColor="#ccffffff"/>
+    </RelativeLayout>
+
+
 </LinearLayout>
 </ScrollView>

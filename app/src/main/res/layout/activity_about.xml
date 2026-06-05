@@ -34,6 +34,6 @@
         android:layout_marginTop="15dp"
         android:gravity="center_horizontal"
         android:textIsSelectable="true"
-        android:text="Github：https://github.com/hlgithub369/MessageRelayerd"
+        android:text="Github：https://github.com/HoseaDev/SMSRedirectEmail"
         android:textSize="15sp"/>
 </LinearLayout>

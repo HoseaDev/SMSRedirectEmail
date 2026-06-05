@@ -18,6 +18,65 @@
             android:textSize="14sp"
             android:layout_marginBottom="12dp" />
 
+        <!-- 默认短信应用 -->
+        <LinearLayout
+            android:id="@+id/item_default_sms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@android:color/white"
+            android:padding="16dp"
+            android:layout_marginBottom="4dp">
+
+            <ImageView
+                android:id="@+id/icon_default_sms"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_status_denied" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginLeft="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/perm_default_sms_title"
+                    android:textColor="#333333"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/status_default_sms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/perm_default_sms_denied"
+                    android:textColor="#999999"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/action_default_sms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/perm_default_sms_set"
+                android:textColor="#e67e22"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/perm_default_sms_warning"
+            android:textColor="#e67e22"
+            android:textSize="12sp"
+            android:layout_marginBottom="12dp"
+            android:lineSpacingExtra="2dp" />
+
         <!-- 短信权限 -->
         <LinearLayout
             android:id="@+id/item_sms_permission"

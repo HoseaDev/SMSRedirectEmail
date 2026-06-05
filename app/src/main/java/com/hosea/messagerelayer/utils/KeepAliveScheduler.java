@@ -42,7 +42,14 @@ public class KeepAliveScheduler {
 
         long intervalMillis = (long) intervalDays * 24 * 60 * 60 * 1000;
         long now = System.currentTimeMillis();
-        long nextTime = now + intervalMillis;
+        // 优先以上次实际发送时间为基准，避免重启/重开后时间漂移
+        long lastSendTime = mgr.getKeepAliveLastSendTime(subId);
+        long base = (lastSendTime > 0) ? lastSendTime : now;
+        long nextTime = base + intervalMillis;
+        // 如果算出来的时间已经过去（比如刚装 app 或间隔改短了），就从现在起算
+        if (nextTime <= now) {
+            nextTime = now + intervalMillis;
+        }
 
         mgr.setKeepAliveNextSendTime(subId, nextTime);
 
@@ -67,8 +74,8 @@ public class KeepAliveScheduler {
     public static void scheduleTest(Context context, int subId) {
         long testTime = System.currentTimeMillis() + 10 * 1000;
 
+        // 测试闹钟不写入 nextSendTime，避免覆盖正式的下次发送时间
         NativeDataManager mgr = new NativeDataManager(context);
-        mgr.setKeepAliveNextSendTime(subId, testTime);
 
         Intent intent = new Intent(context, KeepAliveSmsReceiver.class);
         intent.putExtra(Constant.EXTRA_KEEP_ALIVE_SUB_ID, subId);
